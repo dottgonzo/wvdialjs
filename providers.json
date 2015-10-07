@@ -1,0 +1,53 @@
+
+[
+  {
+    "country":"italy",
+    "providers":[
+      {
+        "label":"H3G",
+        "params":[
+          {
+            "label":"Tre Ricaricabile",
+            "apn":"tre.it",
+            "number":"*99#",
+            "user":"tre",
+            "password":"tre"
+          }
+        ]
+      },{
+        "label":"TIM",
+        "params":[
+          {
+            "label":"TIM Ricaricabile",
+            "apn":"",
+            "number":"",
+            "user":"",
+            "password":""
+          }
+        ]
+      },{
+        "label":"Vodafone",
+        "params":[
+          {
+            "label":"Vodafone Ricaricabile",
+            "apn":"",
+            "number":"",
+            "user":"",
+            "password":""
+          }
+        ]
+      },{
+        "label":"Wind",
+        "params":[
+          {
+            "label":"Wind Ricaricabile",
+            "apn":"",
+            "number":"",
+            "user":"",
+            "password":""
+          }
+        ]
+      }
+  ]
+}
+]

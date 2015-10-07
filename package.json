@@ -1,0 +1,26 @@
+{
+  "name": "wvdialjs",
+  "version": "0.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "node ./tests/main.js",
+    "hw": "git add -A && git commit -m 'oki'&&npm version patch -m patch&&git add -A && git commit --amend -C HEAD&& git push&&npm publish",
+    "patch": "npm version patch -m patch&&git add -A && git commit --amend -C HEAD&& git push&&npm publish",
+    "prepublish": "npm test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/dottgonzo/wvdialjs.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/dottgonzo/wvdialjs/issues"
+  },
+  "dependencies": {
+    "promise": "^7.0.4",
+    "verbo": "0.0.7"
+  },
+  "devDependencies": {}
+}
