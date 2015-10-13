@@ -5,3 +5,7 @@ var wvdialjs=new Wv('/etc/wvdial.conf');
 
 
 wvdialjs.connect()
+
+console.log('bao')
+
+console.log('miao')
