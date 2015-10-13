@@ -78,12 +78,12 @@ function allstrings(configFilePath){
 
 function connect(configFilePath){
   return new Promise(function (resolve, reject) {
+    resolve({success:true})
 
   exec('modprobe usbserial&&wvdial Defaults -C '+configFilePath+' 1>/dev/null 2>/dev/null')
   setTimeout(function () {
 
     exec('ip route add default dev ppp0 '+configFilePath)
-    resolve({success:true})
 
 
   }, 30000);
