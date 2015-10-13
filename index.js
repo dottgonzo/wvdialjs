@@ -1,6 +1,7 @@
 var exec = require('promised-exec'),
 verb=require('verbo'),
 Promise=require('promise'),
+pathExists = require('path-exists'),
 providers=require('./providers.json');
 
 
@@ -11,201 +12,222 @@ providers=require('./providers.json');
 function setstring(configFilePath,key,val){
 
   return new Promise(function (resolve, reject) {
-getstring(configFilePath,key).then(function(oldstring){
+    getstring(configFilePath,key).then(function(oldstring){
+
+      verb(oldstring.replace(/\'/g, '\\"').replace(/\//g,'\\\/'))
+
+      exec('sed -i -e "s/'+key[0].toUpperCase() + key.slice(1)+' = '+oldstring.replace(/\'/g, '\\"').replace(/\//g,'\\\/')+'/'+key[0].toUpperCase() + key.slice(1)+' = '+val.replace(/\"/g, '\\"').replace(/\//g,'\\\/')+'/g" '+configFilePath+'').then(function(stdout){
+
+        resolve({success:true})
+
+      }).catch(function(err){
+        reject({error:err})
+        verb('error',"error","setstring")
+
+      })
+
+    }).catch(function(err){
+      reject({error:err})
+      verb('error',"error","setstring")
+
+    })
 
 
-  exec('sed -i -e "s/'+key[0].toUpperCase() + key.slice(1)+' = '+oldstring.replace(/\'/g, '\\"')+'/'+key[0].toUpperCase() + key.slice(1)+' = '+val.replace(/\"/g, '\\"')+'/g" '+configFilePath+'').then(function(stdout){
 
-    resolve({success:true})
-
-  }).catch(function(err){
-    reject({error:err})
-    verb('error',"error","getstring")
 
   })
-
-}).catch(function(err){
-    reject({error:err})
-    verb('error',"error","getstring")
-
-  })
-
-
-
-
-})
 }
 function getstring(configFilePath,param){
   return new Promise(function (resolve, reject) {
-allstrings(configFilePath).then(function(data){
-  test=false;
-  for(var i=0;i<Object.keys(data).length;i++){
+    allstrings(configFilePath).then(function(data){
+      test=false;
+      for(var i=0;i<Object.keys(data).length;i++){
 
 
-    if(Object.keys(data)[i]==(param[0].toUpperCase() + param.slice(1))){
+        if(Object.keys(data)[i]==(param[0].toUpperCase() + param.slice(1))){
 
-  test=true;
-  resolve(data[Object.keys(data)[i]]);
-    }
-  }
+          test=true;
+          resolve(data[Object.keys(data)[i]]);
+        }
+      }
 
-  if(!test){
+      if(!test){
 
-    reject({error:"wrong param"})
+        reject({error:"wrong param"})
 
-  }
+      }
 
 
-}).catch(function(err){
-  reject({error:err})
+    }).catch(function(err){
+      reject({error:err})
 
-})
+    })
 
-})
+  })
 }
 function allstrings(configFilePath){
   return new Promise(function (resolve, reject) {
 
-  exec(__dirname+'/wvdial.sh  -t "get" -c"'+configFilePath+'"').then(function(data){
-    resolve(JSON.parse(data))
-  }).catch(function(err){
-    reject(err)
-  })
+    exec(__dirname+'/wvdial.sh  -t "get" -c"'+configFilePath+'"').then(function(data){
+      resolve(JSON.parse(data))
+    }).catch(function(err){
+      reject(err)
+    })
   })
 }
 
 function connect(configFilePath){
-exec('modprobe usbserial&&wvdial Defaults -C '+configFilePath+' 1>/dev/null 2>/dev/null')
-setTimeout(function () {
+  exec('modprobe usbserial&&wvdial Defaults -C '+configFilePath+' 1>/dev/null 2>/dev/null')
+  setTimeout(function () {
 
-  exec('ip route add default dev ppp0 '+configFilePath)
+    exec('ip route add default dev ppp0 '+configFilePath)
 
 
-}, 30000);
+  }, 30000);
 }
 
-    function Wvdial(configFilePath,device) {
-      this.configFilePath = configFilePath; // /etc/wvdial.conf
-      this.device = device; // /dev/ttyUSB0 or 2-1.2
-    }
-    Wvdial.prototype.connect=function(){
-      connect(this.configFilePath)
-    },
-    Wvdial.prototype.setUsb=function(connect){
-      var configFilePath = this.configFilePath;
+function Wvdial(configFilePath) {
+  if(configFilePath){
+    this.configFilePath = configFilePath; // /etc/wvdial.conf
 
-if( this.device && pathExist.sync(this.device)){
-  return setstring(this.configFilePath,'Modem',this.device)
+  } else{
+    this.configFilePath = '/etc/wvdial.conf'
 
-
+  }
 }
+Wvdial.prototype.connect=function(){
+  connect(this.configFilePath)
+},
+Wvdial.prototype.setUsb=function(device){
+  var configFilePath = this.configFilePath;
+  return new Promise(function (resolve, reject) {
 
-    },
-    Wvdial.prototype.setProvider=function(provider){
-      var configFilePath = this.configFilePath;
+  if( device){
+    setstring(configFilePath,'Modem',device.replace(/\//g,'\\\/')).then(function(){
+      resolve({success:true})
+    }).catch(function(err){
+      reject(err)
 
-      return new Promise(function (resolve, reject) {
-if(provider.apn){
-  setstring(configFilePath,'Init3','"AT+CGDCONT=1","ip","'+provider.apn+'",,0,0').then(function(){
-    console.log('ok apn')
-    if(provider.phone){
-      setstring(configFilePath,'Phone',provider.phone)
+    })
+
+
+  } else{
+    reject({error:"No device "+device+" founded"})
+
+  }
+})
+},
+Wvdial.prototype.setProvider=function(provider){
+  var configFilePath = this.configFilePath;
+
+  return new Promise(function (resolve, reject) {
+    if(provider.apn){
+      setstring(configFilePath,'Init3','"AT+CGDCONT=1","ip","'+provider.apn+'",,0,0').then(function(){
+        console.log('ok apn')
+        if(provider.phone){
+          setstring(configFilePath,'Phone',provider.phone)
+        }
+        if(provider.username){
+          setstring(configFilePath,'Username',provider.username)
+        }
+        if(provider.password){
+          setstring(configFilePath,'Password',provider.password)
+        }
+        resolve({success:true})
+      })
+
+
+    } else{
+      reject('Must provide tty',"error","set provider with no apn")
+
     }
-    if(provider.username){
-      setstring(configFilePath,'Username',provider.username)
-    }
-    if(provider.password){
-      setstring(configFilePath,'Password',provider.password)
-    }
-    resolve({success:true})
+
+
   })
 
-
-} else{
-  reject('Must provide tty',"error","set provider with no apn")
-
-}
-
-
-  })
-
-    },
-    Wvdial.prototype.getConfig=function(){
-return allstrings(this.configFilePath)
+},
+Wvdial.prototype.getConfig=function(){
+  return allstrings(this.configFilePath)
 
 
 
-    },
-      Wvdial.prototype.setParam=function(key,val){
-return setstring(this.configFilePath,key,val)
+},
+Wvdial.prototype.setParam=function(key,val){
+  return setstring(this.configFilePath,key,val)
 
 
 
-    },
-    Wvdial.prototype.getParam=function(param){
-return getstring(this.configFilePath,param)
+},
+Wvdial.prototype.getParam=function(param){
+  return getstring(this.configFilePath,param)
 
 
 
-    },
+},
 Wvdial.prototype.getProviders=function(){
   return providers;
 },
 Wvdial.prototype.getProvidersFrom=function(country){
   return new Promise(function (resolve, reject) {
 
-if(!country){
-reject('Must provide a country')
-verb('Must provide a country',"error","Wvdialjs")
-} else{
-var prov=[];
-for(var i=0;i<providers.length;i++){
-  if(providers[i].country.toLowerCase()==country.toLowerCase()){
-prov.push(providers[i].providers)
-  }
-}
+    if(!country){
+      reject('Must provide a country')
+      verb('Must provide a country',"error","Wvdialjs")
+    } else{
+      var prov=[];
+      for(var i=0;i<providers.length;i++){
+        if(providers[i].country.toLowerCase()==country.toLowerCase()){
+          prov.push(providers[i].providers)
+        }
+      }
 
-if(prov.length>0){
-resolve(prov);
-} else{
-reject('No providers for '+country)
-}
-
-}
-
-
-})
-};
-
-    Wvdial.prototype.setConfig=function(connect){
-var device=this.device;
-var configFilePath=this.configFilePath;
-var j=this.provider;
-    return new Promise(function (resolve, reject) {
-
-  if (!j){
-    reject('Must provide config')
-  verb('Must provide a json for settings',"error","Wvdialjs")
-  } else{
-    if (!j.apn){
-      reject('Must provide apn')
-      verb('Must provide apn',"error","Wvdialjs")
-
-    } else if(!j.tty){
-      reject('Must provide tty')
-      verb('Must provide tty',"error","Wvdialjs")
+      if(prov.length>0){
+        resolve(prov);
       } else{
+        reject('No providers for '+country)
+      }
 
-      exec(__dirname+'/wvdial.sh  -t "set" -c"'+configFilePath+'" -a"'+j.apn+'" -p"'+j.password+'" -u "'+j.user+'" -n "'+j.number+'" -y').then(function(stdout) {
-    resolve(JSON.parse(stdout));
-    if(connect){
-      connect(configFilePath);
     }
-  });
-    }
-  }
+
 
   })
+};
+
+Wvdial.prototype.configure=function(provider,connect){
+  var configFilePath=this.configFilePath;
+if(provider){
+
+
+  return new Promise(function (resolve, reject) {
+
+    exec('echo "[Dialer Defaults]" > '+configFilePath).then(function(){
+      exec('echo \'Init3 = "AT+CGDCONT=1","ip","'+provider.apn+'",,0,0\' >> '+configFilePath).then(function(){
+        exec('echo "Phone = '+provider.phone+'" >> '+configFilePath).then(function(){
+          exec('echo "Username = '+provider.username+'" >> '+configFilePath).then(function(){
+            exec('echo "Password = '+provider.password+'" >> '+configFilePath).then(function(){
+
+              exec('wvdialconf '+configFilePath).then(function(){
+                resolve({success:true});
+}).catch(function(err){
+  reject({error:'error on modem '})
+
+})
+            })
+          })
+        })
+      })
+
+    }).catch(function(err){
+      reject({error:'error on open '+configFilePath})
+
+    })
+
+
+  })
+} else{
+  reject({error:'must push a provider'})
+
+}
 };
 
 

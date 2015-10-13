@@ -18,7 +18,13 @@ wvdialjs.setParam('password','ffff').then(function(data){
 }).catch(function(err){
   verb(err,"error","set")
 });
-wvdialjs.setProvider({"label":"TIM Ricaricabile","apn":"wap.tim.it","phone":"*99#ff","username":"tim","password":"tim"}).then(function(data){
+wvdialjs.setUsb('/dev/ttyUSB0').then(function(data){
+  verb(JSON.stringify(data),"info","USB set")
+
+}).catch(function(err){
+  verb(JSON.stringify(err),"error","set USB")
+});
+wvdialjs.setProvider({"label":"Tre Ricaricabile","apn":"tre.it","phone":"*99#","username":"tre","password":"tre"}).then(function(data){
   verb(JSON.stringify(data),"info","setProvider")
 
 }).catch(function(err){
