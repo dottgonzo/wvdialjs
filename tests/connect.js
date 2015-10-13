@@ -1,11 +1,17 @@
 var verb=require('verbo'),
-Wv=require('../index.js');
-var wvdialjs=new Wv('/etc/wvdial.conf');
+Wv=require('../index.js'),
+wvdialjs=new Wv('/etc/wvdial.conf'),
+isOnline = require('is-online'),
+timerdaemon=require('timerdaemon');
 
 
 
 wvdialjs.connect()
 
-console.log('bao')
+timerdaemon(5000,function(){
+  isOnline(function(err, online) {
+      verb(online);
+      //=> true
+  });
 
-console.log('miao')
+})

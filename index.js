@@ -2,6 +2,7 @@ var exec = require('promised-exec'),
 verb=require('verbo'),
 Promise=require('promise'),
 pathExists = require('path-exists'),
+spawn = require('child_process').spawn,
 providers=require('./providers.json');
 
 
@@ -79,12 +80,14 @@ function allstrings(configFilePath){
 function connect(configFilePath){
 
 
-
-  exec('modprobe usbserial&&wvdial Defaults -C '+configFilePath+' 1>/dev/null 2>/dev/null')
+  s var child = spawn('modprobe usbserial&&wvdial Defaults -C '+configFilePath+' 1>/dev/null 2>/dev/null', [], {
+     detached: true   });
+ child.unref();
   setTimeout(function () {
 
-    exec('ip route add default dev ppp0 '+configFilePath)
-
+    var childd = spawn('ip route add default dev ppp0 '+configFilePath, [], {
+      detached: true   });
+   childd.unref();
 
   }, 30000);
 

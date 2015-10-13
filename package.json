@@ -19,10 +19,13 @@
     "url": "https://github.com/dottgonzo/wvdialjs/issues"
   },
   "dependencies": {
+    "is-online": "^5.0.0",
     "path-exists": "^2.0.0",
     "promise": "^7.0.4",
     "promised-exec": "^1.0.1",
     "verbo": "0.0.7"
   },
-  "devDependencies": {}
+  "devDependencies": {
+    "timerdaemon": "0.0.2"
+  }
 }
