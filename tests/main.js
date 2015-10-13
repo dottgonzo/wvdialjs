@@ -1,10 +1,10 @@
 var verb=require('verbo'),
-wvdialjs=require('../index.js');
+Wv=require('../index.js');
+var wvdialjs=new Wv();
+verb(JSON.stringify(wvdialjs.getProviders()),"info","Wvdialjs");
 
-verb(JSON.stringify(wvdialjs.getall()),"info","Wvdialjs");
 
-
-wvdialjs.getparams('Italy').then(function(c){
+wvdialjs.getProvidersFrom('Italy').then(function(c){
   verb(JSON.stringify(c),"info","Wvdialjs")
 }).catch(function(err){
 verb('error','error','Wvdialjs')

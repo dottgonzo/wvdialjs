@@ -15,7 +15,6 @@ while getopts c:a:p:n:u:t:y option
 		in
 		        t) todo=$OPTARG;;
 			c) target=$OPTARG;;
-      d) tty=$OPTARG;;
 		        a) apn=$OPTARG;;
 		        p) passw=$OPTARG;;
 		        n) number=$OPTARG;;
@@ -94,9 +93,6 @@ echo "Phone = $number" >> $target
 else
 echo 'Phone = *99#' >> $target
 fi
-if [[ "$tty" ]];then
-echo "Modem = $tty" >> $target
-fi
 if [[ "$username" ]];then
 echo "Username = $username" >> $target
 else
@@ -109,7 +105,13 @@ else
 echo "Password = none" >> $target
 fi
 
-echo -n '{"apn":"'"$apn"'","phone":"'"$phone"'","user":"'"$username"'","password":"'"$passw"'","plugged":"'$dev'"}'
+wvdialconf $target
+
+
+	echo -n '{"apn":"'"$apn"'","phone":"'"$phone"'","user":"'"$username"'","password":"'"$passw"'","plugged":"'$dev'"}'
+
+
+
 
 
 elif [[ $todo == 'device' ]] && [[ -f $target ]]; then
