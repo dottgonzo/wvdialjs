@@ -77,8 +77,8 @@ function allstrings(configFilePath){
 }
 
 function connect(configFilePath){
-  return new Promise(function (resolve, reject) {
-    resolve({success:true})
+
+
 
   exec('modprobe usbserial&&wvdial Defaults -C '+configFilePath+' 1>/dev/null 2>/dev/null')
   setTimeout(function () {
@@ -87,7 +87,7 @@ function connect(configFilePath){
 
 
   }, 30000);
-})
+
 
 }
 
