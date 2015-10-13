@@ -9,8 +9,8 @@
           {
             "label":"Tre Ricaricabile",
             "apn":"tre.it",
-            "number":"*99#",
-            "user":"tre",
+            "phone":"*99#",
+            "username":"tre",
             "password":"tre"
           }
         ]
@@ -19,10 +19,10 @@
         "params":[
           {
             "label":"TIM Ricaricabile",
-            "apn":"",
-            "number":"",
-            "user":"",
-            "password":""
+            "apn":"wap.tim.it",
+            "phone":"*99#ff",
+            "username":"tim",
+            "password":"tim"
           }
         ]
       },{
@@ -31,8 +31,8 @@
           {
             "label":"Vodafone Ricaricabile",
             "apn":"",
-            "number":"",
-            "user":"",
+            "phone":"",
+            "username":"",
             "password":""
           }
         ]
@@ -42,8 +42,8 @@
           {
             "label":"Wind Ricaricabile",
             "apn":"",
-            "number":"",
-            "user":"",
+            "phone":"",
+            "username":"",
             "password":""
           }
         ]

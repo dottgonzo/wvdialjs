@@ -50,14 +50,36 @@ dev='false'
 fi
 if [[ $todo == 'get' ]] && [[ -f $target ]];then
 
-number=$(cat $target | grep 'Phone'|sed 's/Phone=//g')
-tty=$(cat $target | grep 'Modem'|sed 's/Modem=//g')
-username=$(cat $target | grep 'Username'|sed 's/Username=//g')
-password=$(cat $target | grep 'Password'|sed 's/Password=//g')
-apn=$(cat $target | grep 'Apn'|sed 's/Apn=//g')
+number=$(cat $target | grep 'Phone'|sed 's/Phone =//g')
+tty=$(cat $target | grep 'Modem ='|sed 's/Modem =//g')
+username=$(cat $target | grep 'Username'|sed 's/Username =//g')
+password=$(cat $target | grep 'Password'|sed 's/Password =//g')
+apn=$(cat $target | grep 'Init3'|sed 's/Init3 = //g'|sed 's/,/ /g'|sed 's/"//g'|awk '{print($3)}')
 
-echo -n "{\"number\":\"$number\",\"username\":\"$username\",\"password\":\"$password\",\"apn\":\"$apn\",\"tty\":\"$tty\"}"
+conf=$(cat $target |grep '=')
+rows=$(cat $target |grep -c '=')
+while read -r line
+do
 
+if [[ $(echo $line|grep -c '=') > 0 ]]; then
+	option='"'$(echo ${line%%=*})'":"'$(echo ${line#*=}|sed "s/\"/'/g")'"'
+if [[ $options ]];then
+
+options="$options,$option"
+
+else
+	options=$option
+
+fi
+
+fi
+
+
+done < "$target"
+
+echo -n "{$options}"
+
+exit 0
 fi
 
 
