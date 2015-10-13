@@ -127,7 +127,7 @@ Wvdial.prototype.setProvider=function(provider){
 
   return new Promise(function (resolve, reject) {
     if(provider.apn){
-      setstring(configFilePath,'Init3','"AT+CGDCONT=1","ip","'+provider.apn+'",,0,0').then(function(){
+      setstring(configFilePath,'Init3','AT+CGDCONT=1,"ip","'+provider.apn+'",,0,0').then(function(){
         console.log('ok apn')
         if(provider.phone){
           setstring(configFilePath,'Phone',provider.phone)
@@ -206,7 +206,7 @@ if(provider){
   return new Promise(function (resolve, reject) {
 
     exec('echo "[Dialer Defaults]" > '+configFilePath).then(function(){
-      exec('echo \'Init3 = "AT+CGDCONT=1","ip","'+provider.apn+'",,0,0\' >> '+configFilePath).then(function(){
+      exec('echo \'Init3 = AT+CGDCONT=1,"ip","'+provider.apn+'",,0,0\' >> '+configFilePath).then(function(){
         exec('echo "Phone = '+provider.phone+'" >> '+configFilePath).then(function(){
           exec('echo "Username = '+provider.username+'" >> '+configFilePath).then(function(){
             exec('echo "Password = '+provider.password+'" >> '+configFilePath).then(function(){
