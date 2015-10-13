@@ -80,7 +80,7 @@ function allstrings(configFilePath){
 function connect(configFilePath){
 
 
-  s var child = spawn('modprobe usbserial&&wvdial Defaults -C '+configFilePath+' 1>/dev/null 2>/dev/null', [], {
+  var child = spawn('modprobe usbserial&&wvdial Defaults -C '+configFilePath+' 1>/dev/null 2>/dev/null', [], {
      detached: true   });
  child.unref();
   setTimeout(function () {
