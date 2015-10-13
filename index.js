@@ -77,13 +77,18 @@ function allstrings(configFilePath){
 }
 
 function connect(configFilePath){
+  return new Promise(function (resolve, reject) {
+
   exec('modprobe usbserial&&wvdial Defaults -C '+configFilePath+' 1>/dev/null 2>/dev/null')
   setTimeout(function () {
 
     exec('ip route add default dev ppp0 '+configFilePath)
+    resolve({success:true})
 
 
   }, 30000);
+})
+
 }
 
 function Wvdial(configFilePath) {
@@ -96,7 +101,7 @@ function Wvdial(configFilePath) {
   }
 }
 Wvdial.prototype.connect=function(){
-  connect(this.configFilePath)
+  return connect(this.configFilePath)
 },
 Wvdial.prototype.setUsb=function(device){
   var configFilePath = this.configFilePath;
