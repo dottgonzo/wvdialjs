@@ -8,7 +8,7 @@ timerdaemon=require('timerdaemon');
 
 wvdialjs.connect()
 
-timerdaemon(5000,function(){
+timerdaemon.post(5000,function(){
   isOnline(function(err, online) {
       verb(online);
       //=> true
