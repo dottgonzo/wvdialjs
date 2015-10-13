@@ -80,14 +80,12 @@ function allstrings(configFilePath){
 function connect(configFilePath){
 
 
-  var child = spawn('modprobe usbserial&&wvdial Defaults -C '+configFilePath+' 1>/dev/null 2>/dev/null', [], {
-     detached: true   });
- child.unref();
+
+  exec('modprobe usbserial&&wvdial Defaults -C '+configFilePath+' 1>/dev/null 2>/dev/null  &')
   setTimeout(function () {
 
-    var childd = spawn('ip route add default dev ppp0 '+configFilePath, [], {
-      detached: true   });
-   childd.unref();
+    exec('ip route add default dev ppp0 '+configFilePath)
+
 
   }, 30000);
 
