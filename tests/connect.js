@@ -11,8 +11,11 @@ wvdialjs.connect()
 timerdaemon.post(5000,function(){
   netw.data().then(function(doc){
     if (doc.network){
-    verb("online","info","connected to"+doc.network.dev+'with '+doc.network.ip)  
-    }
+    verb("connected to "+doc.network.dev+' with '+doc.network.ip,"info","Online")
+  } else{
+    verb("Offline","warning","Offline")
+
+  }
 
   })
 

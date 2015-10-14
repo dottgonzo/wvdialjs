@@ -19,7 +19,6 @@
     "url": "https://github.com/dottgonzo/wvdialjs/issues"
   },
   "dependencies": {
-    "is-online": "^5.0.0",
     "netw": "0.0.2",
     "path-exists": "^2.0.0",
     "promise": "^7.0.4",
