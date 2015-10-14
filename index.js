@@ -102,7 +102,18 @@ function Wvdial(configFilePath) {
   }
 }
 Wvdial.prototype.connect=function(){
-  return connect(this.configFilePath)
+  var configFilePath = this.configFilePath;
+
+  getstring(configFilePath,'Modem').then(function(data){
+    if(pathExists.sync(data)){
+connect(this.configFilePath)
+    }
+
+
+  })
+
+
+
 },
 Wvdial.prototype.setUsb=function(device){
   var configFilePath = this.configFilePath;

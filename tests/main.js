@@ -6,7 +6,7 @@ wvdialjs.getConfig().then(function(data){
   verb(JSON.stringify(data),"info","config")
 
 });
-wvdialjs.getParam('password').then(function(data){
+wvdialjs.getParam('modem').then(function(data){
   verb(JSON.stringify(data),"info","password param")
 
 }).catch(function(err){
