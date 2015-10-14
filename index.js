@@ -106,7 +106,7 @@ Wvdial.prototype.connect=function(){
 
   getstring(configFilePath,'Modem').then(function(data){
     if(pathExists.sync(data)){
-connect(this.configFilePath)
+connect(configFilePath)
     }
 
 
