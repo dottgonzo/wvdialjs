@@ -6,7 +6,7 @@ timerdaemon=require('timerdaemon');
 
 
 
-wvdialjs.connect()
+wvdialjs.connect();
 
 timerdaemon.post(5000,function(){
   netw.data().then(function(doc){
