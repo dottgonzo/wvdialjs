@@ -13,7 +13,7 @@ timerdaemon.post(5000,function(){
     if (doc.network){
     verb("connected to "+doc.network.dev+' with '+doc.network.ip,"info","Online")
   } else{
-    verb("Offline","warning","Offline")
+    verb("Offline","warn","Offline")
 
   }
 
