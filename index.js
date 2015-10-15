@@ -1,5 +1,4 @@
 var exec = require('promised-exec'),
-verb=require('verbo'),
 Promise=require('promise'),
 pathExists = require('path-exists'),
 spawn = require('child_process').spawn,
@@ -15,7 +14,7 @@ function setstring(configFilePath,key,val){
   return new Promise(function (resolve, reject) {
     getstring(configFilePath,key).then(function(oldstring){
 
-      verb(oldstring.replace(/\'/g, '\\"').replace(/\//g,'\\\/'))
+
 
       exec('sed -i -e "s/'+key[0].toUpperCase() + key.slice(1)+' = '+oldstring.replace(/\'/g, '\\"').replace(/\//g,'\\\/')+'/'+key[0].toUpperCase() + key.slice(1)+' = '+val.replace(/\"/g, '\\"').replace(/\//g,'\\\/')+'/g" '+configFilePath+'').then(function(stdout){
 
@@ -23,13 +22,13 @@ function setstring(configFilePath,key,val){
 
       }).catch(function(err){
         reject({error:err})
-        verb('error',"error","setstring")
+
 
       })
 
     }).catch(function(err){
       reject({error:err})
-      verb('error',"error","setstring")
+
 
     })
 
@@ -189,7 +188,6 @@ Wvdial.prototype.getProvidersFrom=function(country){
 
     if(!country){
       reject('Must provide a country')
-      verb('Must provide a country',"error","Wvdialjs")
     } else{
       var prov=[];
       for(var i=0;i<providers.length;i++){
