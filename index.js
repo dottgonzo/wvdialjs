@@ -88,7 +88,7 @@ exec('pkill wvdial && sleep 5 ; modprobe usbserial').then(function(){
 }).catch(function(){
   exec('wvdial Defaults -C '+configFilePath+' 1>/dev/null 2>/dev/null &')
 })
-    console.log('continue')
+
 
       var fun=function(){
         return new Promise(function (resolve, reject) {
@@ -96,7 +96,7 @@ exec('pkill wvdial && sleep 5 ; modprobe usbserial').then(function(){
         verb('check connection','debug','wvdialjs')
 
         netw().then(function(n){
-          console.log('netw')
+
 
           var dev=false
           var ip=false;
