@@ -1,7 +1,9 @@
 var exec = require('promised-exec'),
 Promise=require('promise'),
+waitfor=require('waitfor-promise'),
 pathExists = require('path-exists'),
-spawn = require('child_process').spawn,
+//spawn = require('child_process').spawn,
+netw= require('netw'),
 providers=require('./providers.json');
 
 
@@ -78,16 +80,42 @@ function allstrings(configFilePath){
 
 function connect(configFilePath){
 
+  return new Promise(function (resolve, reject) {
+    exec('modprobe usbserial&&wvdial Defaults -C '+configFilePath+' 1>/dev/null 2>/dev/null &').then(function(){
+      var fun=function(){
+        netw().then(function(n){
+          var dev=false
+          var ip=false;
+  for(ns=0;ns<n.networks.length;ns++){
+    if(n.networks[ns].interface=='ppo0'&&n.networks[ns].ip){
+      ip=n.networks[ns].ip;
+    }
+  }
+          if(ip){
+            resolve(true)
+          } else{
+            reject('error')
+          }
+        })
+      }
+
+      return waitfor(fun,{
+        time:3000,
+        timeout:90000
+      })
 
 
-  exec('modprobe usbserial&&wvdial Defaults -C '+configFilePath+' 1>/dev/null 2>/dev/null  &')
-  setTimeout(function () {
+    }).catch(function(err){
+      reject(err)
+    })
 
-    exec('ip route add default dev ppp0 '+configFilePath)
 
 
-  }, 30000);
+  // setTimeout(function () {
+  //   exec('ip route add default dev ppp0')
+  // }, 30000);
 
+})
 
 }
 
@@ -105,7 +133,7 @@ Wvdial.prototype.connect=function(){
 
   getstring(configFilePath,'Modem').then(function(data){
     if(pathExists.sync(data)){
-connect(configFilePath)
+return connect(configFilePath)
     }
 
 
@@ -208,7 +236,7 @@ Wvdial.prototype.getProvidersFrom=function(country){
   })
 };
 
-Wvdial.prototype.configure=function(provider,connect){
+Wvdial.prototype.configure=function(provider){
   var configFilePath=this.configFilePath;
 if(provider){
 
