@@ -81,7 +81,8 @@ function allstrings(configFilePath){
 function connect(configFilePath){
 
   return new Promise(function (resolve, reject) {
-    exec('modprobe usbserial&&wvdial Defaults -C '+configFilePath+' 1>/dev/null 2>/dev/null &').then(function(){
+    exec('modprobe usbserial&&wvdial Defaults -C '+configFilePath+' 1>/dev/null 2>/dev/null &')
+
       var fun=function(){
         netw().then(function(n){
           var dev=false
@@ -105,9 +106,6 @@ function connect(configFilePath){
       })
 
 
-    }).catch(function(err){
-      reject(err)
-    })
 
 
 
