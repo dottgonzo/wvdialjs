@@ -93,7 +93,7 @@ exec('pkill wvdial && sleep 5 ; modprobe usbserial').then(function(){
       var fun=function(){
         return new Promise(function (resolve, reject) {
 
-        verb('check connection','info','wvdialjs')
+        verb('check connection','debug','wvdialjs')
 
         netw().then(function(n){
           console.log('netw')
