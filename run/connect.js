@@ -8,4 +8,6 @@ wvdialjs.connect().then(function(){
   netw().then(function(answer){
     verb(answer)
   })
+}).catch(function(){
+  console.log(err)
 });
