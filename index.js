@@ -142,9 +142,10 @@ function Wvdial(configFilePath) {
   }
 }
 Wvdial.prototype.connect=function(){
+  var configFilePath = this.configFilePath;
+
   return new Promise(function (resolve, reject) {
 console.log('connetctio')
-  var configFilePath = this.configFilePath;
 console.log(configFilePath)
   getstring(configFilePath,'Modem').then(function(data){
     if(pathExists.sync(data)){
