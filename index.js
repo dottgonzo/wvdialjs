@@ -80,11 +80,13 @@ function allstrings(configFilePath){
 
 function connect(configFilePath){
 console.log('connect')
-  return new Promise(function (resolve, reject) {
+
     exec('modprobe usbserial&&wvdial Defaults -C '+configFilePath+' 1>/dev/null 2>/dev/null &')
     console.log('continue')
 
       var fun=function(){
+        return new Promise(function (resolve, reject) {
+
         console.log('fun')
 
         netw().then(function(n){
@@ -107,17 +109,14 @@ console.log('connect')
           reject(err)
 
         })
+      })
+
+
       }
 
-      waitfor.post(fun,{
+      return waitfor.post(fun,{
         time:3000,
         timeout:90000
-      }).then(function(answer){
-        resolve(answer)
-
-      }).catch(function(err){
-        reject(err)
-
       })
 
 
@@ -128,7 +127,7 @@ console.log('connect')
   //   exec('ip route add default dev ppp0')
   // }, 30000);
 
-})
+
 
 }
 
