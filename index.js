@@ -109,7 +109,7 @@ console.log('connect')
         })
       }
 
-      waitfor(fun,{
+      waitfor.post(fun,{
         time:3000,
         timeout:90000
       }).then(function(answer){
