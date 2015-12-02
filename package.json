@@ -20,7 +20,7 @@
     "url": "https://github.com/dottgonzo/wvdialjs/issues"
   },
   "dependencies": {
-    "netw": "0.0.15",
+    "netw": "0.0.16",
     "path-exists": "^2.0.0",
     "promise": "^7.0.4",
     "promised-exec": "^1.0.1",
