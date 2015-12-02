@@ -79,7 +79,8 @@ function allstrings(configFilePath){
 }
 
 function connect(configFilePath){
-console.log('connect')
+  
+console.log(configFilePath)
 
     exec('modprobe usbserial&&wvdial Defaults -C '+configFilePath+' 1>/dev/null 2>/dev/null &')
     console.log('continue')
@@ -95,7 +96,7 @@ console.log('connect')
           var dev=false
           var ip=false;
   for(ns=0;ns<n.networks.length;ns++){
-    if(n.networks[ns].interface=='ppo0'&&n.networks[ns].ip){
+    if(n.networks[ns].interface=='ppp0'&&n.networks[ns].ip){
       ip=n.networks[ns].ip;
     }
   }
@@ -116,7 +117,7 @@ console.log('connect')
 
       return waitfor.post(fun,{
         time:3000,
-        timeout:90000
+        timeout:180000
       })
 
 

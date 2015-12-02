@@ -9,5 +9,7 @@ wvdialjs.connect().then(function(){
     verb(answer)
   })
 }).catch(function(){
-  console.log(err)
+
+
+  verb(err,'error','connection')
 });
