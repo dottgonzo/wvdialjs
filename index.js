@@ -98,7 +98,7 @@ function connect(configFilePath){
             reject('error')
           }
         }).catch(function(err){
-          verb(err,'error''Wvdialjs netwerr')
+          verb(err,'error','Wvdialjs netwerr')
         })
       }
 
