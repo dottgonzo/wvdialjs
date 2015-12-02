@@ -79,6 +79,7 @@ function allstrings(configFilePath){
 }
 
 function connect(configFilePath){
+  return new Promise(function (resolve, reject) {
 
 console.log(configFilePath)
 exec('pkill wvdial && sleep 5 ; modprobe usbserial').then(function(){
@@ -124,9 +125,16 @@ exec('pkill wvdial && sleep 5 ; modprobe usbserial').then(function(){
 
       }
 
-      return waitfor.post(fun,{
+      waitfor.post(fun,{
         time:3000,
         timeout:180000
+      }).then(function(answer){
+        resolve(answer)
+
+      }).catch(function(err){
+        verb(err,'error','Wvdialjs waitfor')
+        reject(err)
+
       })
 
 
@@ -138,7 +146,7 @@ exec('pkill wvdial && sleep 5 ; modprobe usbserial').then(function(){
   // }, 30000);
 
 
-
+    })
 }
 
 function Wvdial(configFilePath) {
