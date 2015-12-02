@@ -99,12 +99,20 @@ function connect(configFilePath){
           }
         }).catch(function(err){
           verb(err,'error','Wvdialjs netwerr')
+          reject(err)
+
         })
       }
 
-      return waitfor(fun,{
+      waitfor(fun,{
         time:3000,
         timeout:90000
+      }).then(function(answer){
+        resolve(answer)
+
+      }).catch(function(err){
+        reject(err)
+
       })
 
 
