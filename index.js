@@ -110,7 +110,7 @@ exec('pkill wvdial && sleep 5 ; modprobe usbserial').then(function(){
               resolve(true)
 
 
-    
+  
           } else{
             reject('error')
           }
