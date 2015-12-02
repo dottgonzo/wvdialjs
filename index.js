@@ -104,7 +104,13 @@ exec('pkill wvdial && sleep 5 ; modprobe usbserial').then(function(){
     }
   }
           if(ip){
-            resolve(true)
+            exec('ip route add default dev ppp0').then(function(){
+              resolve(true)
+
+            }).catch(function(err){
+              verb(err,'error','Wvdialjs route set ppp0')
+              reject(err)
+            })
           } else{
             reject('error')
           }
