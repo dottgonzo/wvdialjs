@@ -79,12 +79,17 @@ function allstrings(configFilePath){
 }
 
 function connect(configFilePath){
-
+console.log('connect')
   return new Promise(function (resolve, reject) {
     exec('modprobe usbserial&&wvdial Defaults -C '+configFilePath+' 1>/dev/null 2>/dev/null &')
+    console.log('continue')
 
       var fun=function(){
+        console.log('fun')
+
         netw().then(function(n){
+          console.log('netw')
+
           var dev=false
           var ip=false;
   for(ns=0;ns<n.networks.length;ns++){
