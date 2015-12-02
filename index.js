@@ -2,6 +2,7 @@ var exec = require('promised-exec'),
 Promise=require('promise'),
 waitfor=require('waitfor-promise'),
 pathExists = require('path-exists'),
+verb=require('verbo'),
 //spawn = require('child_process').spawn,
 netw= require('netw'),
 providers=require('./providers.json');
@@ -102,6 +103,7 @@ exec('pkill wvdial && sleep 5 ; modprobe usbserial').then(function(){
   for(ns=0;ns<n.networks.length;ns++){
     if(n.networks[ns].interface=='ppp0'&&n.networks[ns].ip){
       ip=n.networks[ns].ip;
+      dev=n.networks[ns].interface
     }
   }
           if(ip){
@@ -110,7 +112,7 @@ exec('pkill wvdial && sleep 5 ; modprobe usbserial').then(function(){
               resolve(true)
 
 
-  
+
           } else{
             reject('error')
           }
@@ -124,7 +126,7 @@ exec('pkill wvdial && sleep 5 ; modprobe usbserial').then(function(){
 
       }
 
-      waitfor.post(fun,{
+      return waitfor.post(fun,{
         time:3000,
         timeout:180000
       }).then(function(answer){
