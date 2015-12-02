@@ -4,9 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "config": "node ./tests/main.js",
-    "connect": "node ./run/ap.js",
-"settings": "node ./run/settings.js",
+    "connect": "node ./run/connect.js",
+"config": "node ./run/config.js",
     "hw": "git add -A && git commit -m 'oki'&&npm version patch -m patch&&git add -A && git commit --amend -C HEAD&& git push&&npm publish",
     "patch": "npm version patch -m patch&&git add -A && git commit --amend -C HEAD&& git push&&npm publish",
     "prepublish": "npm test"
