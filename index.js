@@ -79,7 +79,7 @@ function allstrings(configFilePath){
 }
 
 function connect(configFilePath){
-  
+
 console.log(configFilePath)
 
     exec('modprobe usbserial&&wvdial Defaults -C '+configFilePath+' 1>/dev/null 2>/dev/null &')
@@ -146,7 +146,7 @@ Wvdial.prototype.connect=function(){
 
   return new Promise(function (resolve, reject) {
 console.log('connetctio')
-console.log(configFilePath)
+
   getstring(configFilePath,'Modem').then(function(data){
     if(pathExists.sync(data)){
 connect(configFilePath).then(function(answer){

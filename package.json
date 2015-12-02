@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "connect": "node ./run/connect.js",
-"config": "node ./run/config.js",
+    "config": "node ./run/config.js",
     "hw": "git add -A && git commit -m 'oki'&&npm version patch -m patch&&git add -A && git commit --amend -C HEAD&& git push&&npm publish",
     "patch": "npm version patch -m patch&&git add -A && git commit --amend -C HEAD&& git push&&npm publish",
     "prepublish": "npm test"
@@ -20,7 +20,7 @@
     "url": "https://github.com/dottgonzo/wvdialjs/issues"
   },
   "dependencies": {
-    "netw": "0.0.14",
+    "netw": "0.0.15",
     "path-exists": "^2.0.0",
     "promise": "^7.0.4",
     "promised-exec": "^1.0.1",
