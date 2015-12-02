@@ -81,8 +81,11 @@ function allstrings(configFilePath){
 function connect(configFilePath){
 
 console.log(configFilePath)
-
-    exec('modprobe usbserial&&wvdial Defaults -C '+configFilePath+' 1>/dev/null 2>/dev/null &')
+exec('pkill wvdial && sleep 5 ; modprobe usbserial').then(function(){
+  exec('wvdial Defaults -C '+configFilePath+' 1>/dev/null 2>/dev/null &')
+}).catch(function(){
+  exec('wvdial Defaults -C '+configFilePath+' 1>/dev/null 2>/dev/null &')
+})
     console.log('continue')
 
       var fun=function(){

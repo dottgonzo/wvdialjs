@@ -5,6 +5,8 @@ netw= require('netw');
 
 
 wvdialjs.connect().then(function(){
+  verb('ok','info','connection')
+
   netw().then(function(answer){
     verb(answer)
   })
