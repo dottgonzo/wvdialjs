@@ -93,7 +93,7 @@ exec('pkill wvdial && sleep 5 ; modprobe usbserial').then(function(){
       var fun=function(){
         return new Promise(function (resolve, reject) {
 
-        console.log('fun')
+        verb('check connection','info','wvdialjs')
 
         netw().then(function(n){
           console.log('netw')
@@ -126,8 +126,8 @@ exec('pkill wvdial && sleep 5 ; modprobe usbserial').then(function(){
 
       }
 
-      return waitfor.post(fun,{
-        time:3000,
+      waitfor.post(fun,{
+        time:10000,
         timeout:180000
       }).then(function(answer){
         resolve(answer)
