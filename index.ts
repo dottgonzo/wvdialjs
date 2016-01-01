@@ -83,6 +83,7 @@ function connect(configFilePath: string) {
                         }
                     }
                     if (ip) {
+                        console.log("set default route")
                         exec('ip route add default dev ppp0')
 
                         resolve(true)
@@ -103,8 +104,8 @@ function connect(configFilePath: string) {
         }
 
         waitfor.post(fun, {
-            time: 10000,
-            timeout: 180000
+            time: 20000,
+            timeout: 240000
         }).then(function(answer) {
             resolve(answer)
 
