@@ -10,7 +10,7 @@ wvdialjs.connect().then(function(){
   netw().then(function(answer){
     verb(answer)
   })
-}).catch(function(){
+}).catch(function(err){
 
 
   verb(err,'error','connection')

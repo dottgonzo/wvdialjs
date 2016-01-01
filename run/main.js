@@ -1,9 +1,9 @@
 var verb=require('verbo'),
 Wv=require('../index.js');
 var wvdialjs=new Wv('/etc/wvdial.conf');
-verb(JSON.stringify(wvdialjs.getProviders()),"info","providers");
+verb(wvdialjs.getProviders(),"info","providers");
 wvdialjs.getConfig().then(function(data){
-  verb(JSON.stringify(data),"info","config")
+  verb(data,"info","config")
 
 });
 wvdialjs.getParam('modem').then(function(data){
@@ -13,19 +13,19 @@ wvdialjs.getParam('modem').then(function(data){
   verb(err,"error","param")
 });
 wvdialjs.setParam('password','ffff').then(function(data){
-  verb(JSON.stringify(data),"info","password set")
+  verb(data,"info","password set")
 
 }).catch(function(err){
   verb(err,"error","set")
 });
 wvdialjs.setUsb('/dev/ttyUSB0').then(function(data){
-  verb(JSON.stringify(data),"info","USB set")
+  verb(data,"info","USB set")
 
 }).catch(function(err){
-  verb(JSON.stringify(err),"error","set USB")
+  verb(err,"error","set USB")
 });
 wvdialjs.setProvider({"label":"Tre Ricaricabile","apn":"tre.it","phone":"*99#","username":"tre","password":"tre"}).then(function(data){
-  verb(JSON.stringify(data),"info","setProvider")
+  verb(data,"info","setProvider")
 
 }).catch(function(err){
   verb(err,"error","set")
@@ -34,7 +34,7 @@ wvdialjs.setProvider({"label":"Tre Ricaricabile","apn":"tre.it","phone":"*99#","
 
 
 wvdialjs.getProvidersFrom('Italy').then(function(c){
-  verb(JSON.stringify(c),"info","Wvdialjs")
+  verb(c,"info","Wvdialjs")
 }).catch(function(err){
 verb('error','error','Wvdialjs')
 process.exit(1);
