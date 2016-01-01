@@ -1,6 +1,6 @@
 {
   "name": "wvdialjs",
-  "version": "0.0.34",
+  "version": "0.0.35",
   "description": "",
   "main": "index.js",
   "scripts": {
@@ -21,7 +21,7 @@
   },
   "dependencies": {
     "bluebird": "^3.1.1",
-    "netw": "0.0.50",
+    "netw": "0.0.52",
     "path-exists": "^2.0.0",
     "promised-exec": "^1.0.1",
     "verbo": "0.0.9",
