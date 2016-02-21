@@ -1,0 +1,17 @@
+{
+  "name": "wvdialjs",
+  "ambientDependencies": {
+    "bluebird": "github:DefinitelyTyped/DefinitelyTyped/bluebird/bluebird.d.ts#dc9dabe74a5be62613b17a3605309783a12ff28a",
+    "gulp-concat": "github:DefinitelyTyped/DefinitelyTyped/gulp-concat/gulp-concat.d.ts#dc9dabe74a5be62613b17a3605309783a12ff28a",
+    "node": "github:DefinitelyTyped/DefinitelyTyped/node/node.d.ts#dc9dabe74a5be62613b17a3605309783a12ff28a",
+    "gulp-mocha": "github:DefinitelyTyped/DefinitelyTyped/gulp-mocha/gulp-mocha.d.ts#dc9dabe74a5be62613b17a3605309783a12ff28a",
+    "mocha": "github:DefinitelyTyped/DefinitelyTyped/mocha/mocha.d.ts#dc9dabe74a5be62613b17a3605309783a12ff28a",
+    "async": "github:DefinitelyTyped/DefinitelyTyped/async/async.d.ts#dc9dabe74a5be62613b17a3605309783a12ff28a",
+    "gulp-sourcemaps": "github:DefinitelyTyped/DefinitelyTyped/gulp-sourcemaps/gulp-sourcemaps.d.ts#dc9dabe74a5be62613b17a3605309783a12ff28a",
+    "orchestrator": "github:DefinitelyTyped/DefinitelyTyped/orchestrator/orchestrator.d.ts#dc9dabe74a5be62613b17a3605309783a12ff28a",
+    "gulp-typescript": "github:DefinitelyTyped/DefinitelyTyped/gulp-typescript/gulp-typescript.d.ts#dc9dabe74a5be62613b17a3605309783a12ff28a",
+    "Q": "github:DefinitelyTyped/DefinitelyTyped/q/Q.d.ts#dc9dabe74a5be62613b17a3605309783a12ff28a",
+    "path-exists": "github:DefinitelyTyped/DefinitelyTyped/path-exists/path-exists.d.ts#dc9dabe74a5be62613b17a3605309783a12ff28a",
+    "gulp": "github:DefinitelyTyped/DefinitelyTyped/gulp/gulp.d.ts#dc9dabe74a5be62613b17a3605309783a12ff28a"
+  }
+}

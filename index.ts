@@ -14,17 +14,17 @@ let providers = require('./providers.json');
 
 function setstring(configFilePath: string, key, val) {
 
-    return new Promise(function(resolve, reject) {
+    return new Promise<{success?:boolean}>(function(resolve, reject) {
         getstring(configFilePath, key).then(function(oldstring: string) {
             exec('sed -i -e "s/' + key[0].toUpperCase() + key.slice(1) + ' = ' + oldstring.replace(/\'/g, '\\"').replace(/\//g, '\\\/') + '/' + key[0].toUpperCase() + key.slice(1) + ' = ' + val.replace(/\"/g, '\\"').replace(/\//g, '\\\/') + '/g" ' + configFilePath + '').then(function(stdout) {
                 resolve({ success: true })
             }).catch(function(err) {
                 reject({ error: err })
-            })
+            });
         }).catch(function(err) {
             reject({ error: err })
-        })
-    })
+        });
+    });
 }
 function getstring(configFilePath: string, param) {
     return new Promise(function(resolve, reject) {
