@@ -1,11 +1,10 @@
-var verb=require('verbo'),
-Wv=require('../index.js');
-var wvdialjs=new Wv('/etc/wvdial.conf');
+var verb = require('verbo');
+var Wv = require("../index");
+var wvdialjs = new Wv('/etc/wvdial.conf');
+wvdialjs.configure({ "label": "Tre Ricaricabile", "apn": "tre.it", "phone": "*99#", "username": "tre", "password": "tre" }).then(function (data) {
+    verb(data);
+}).catch(function (err) {
+    verb(err, "error", "error");
+});
 
-
-
-wvdialjs.configure({"label":"Tre Ricaricabile","apn":"tre.it","phone":"*99#","username":"tre","password":"tre"}).then(function(data){
-verb(data)
-}).catch(function(err){
-  verb(err,"error","error")
-})
+//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbInJ1bi9jb25maWctdHJlLnRzIl0sIm5hbWVzIjpbXSwibWFwcGluZ3MiOiJBQUFBLElBQUksSUFBSSxHQUFDLE9BQU8sQ0FBQyxPQUFPLENBQUMsQ0FBQztBQUMxQixJQUFPLEVBQUUsV0FBUyxVQUFVLENBQUMsQ0FBQztBQUM5QixJQUFJLFFBQVEsR0FBQyxJQUFJLEVBQUUsQ0FBQyxrQkFBa0IsQ0FBQyxDQUFDO0FBSXhDLFFBQVEsQ0FBQyxTQUFTLENBQUMsRUFBQyxPQUFPLEVBQUMsa0JBQWtCLEVBQUMsS0FBSyxFQUFDLFFBQVEsRUFBQyxPQUFPLEVBQUMsTUFBTSxFQUFDLFVBQVUsRUFBQyxLQUFLLEVBQUMsVUFBVSxFQUFDLEtBQUssRUFBQyxDQUFDLENBQUMsSUFBSSxDQUFDLFVBQVMsSUFBSTtJQUNuSSxJQUFJLENBQUMsSUFBSSxDQUFDLENBQUE7QUFDVixDQUFDLENBQUMsQ0FBQyxLQUFLLENBQUMsVUFBUyxHQUFHO0lBQ25CLElBQUksQ0FBQyxHQUFHLEVBQUMsT0FBTyxFQUFDLE9BQU8sQ0FBQyxDQUFBO0FBQzNCLENBQUMsQ0FBQyxDQUFBIiwiZmlsZSI6InJ1bi9jb25maWctdHJlLmpzIiwic291cmNlc0NvbnRlbnQiOlsibGV0IHZlcmI9cmVxdWlyZSgndmVyYm8nKTtcbmltcG9ydCBXdj1yZXF1aXJlKFwiLi4vaW5kZXhcIik7XG5sZXQgd3ZkaWFsanM9bmV3IFd2KCcvZXRjL3d2ZGlhbC5jb25mJyk7XG5cblxuXG53dmRpYWxqcy5jb25maWd1cmUoe1wibGFiZWxcIjpcIlRyZSBSaWNhcmljYWJpbGVcIixcImFwblwiOlwidHJlLml0XCIsXCJwaG9uZVwiOlwiKjk5I1wiLFwidXNlcm5hbWVcIjpcInRyZVwiLFwicGFzc3dvcmRcIjpcInRyZVwifSkudGhlbihmdW5jdGlvbihkYXRhKXtcbnZlcmIoZGF0YSlcbn0pLmNhdGNoKGZ1bmN0aW9uKGVycil7XG4gIHZlcmIoZXJyLFwiZXJyb3JcIixcImVycm9yXCIpXG59KVxuIl0sInNvdXJjZVJvb3QiOiIvc291cmNlLyJ9
