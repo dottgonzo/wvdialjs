@@ -6,11 +6,6 @@ let verb = require('verbo');
 let waitfor = require('waitfor-promise');
 let netw = require("netw");
 
-interface IGlobalProviders {
-    
-    country:string;
-    providers:IProvider[];
-}
 
 
 interface IProvider {
@@ -22,9 +17,6 @@ interface IProvider {
             password:string;
     
 }
-
-
-let providers:IGlobalProviders[] = require('./providers.json');
 
 
 // modprobe usbserial
@@ -192,7 +184,7 @@ export =class WvDial {
         })
     };
 
-    setProvider(provider: { apn: string, phone?: string, username?: string, password?: string }) {
+    setProvider(provider: IProvider) {
         let configFilePath = this.configFilePath;
 
         return new Promise<{success?:boolean}>(function(resolve, reject) {
@@ -229,32 +221,7 @@ export =class WvDial {
         return getstring(this.configFilePath, param);
     };
 
-    getProviders() {
-        return providers;
-    };
 
-    getProvidersFrom(country) {
-        return new Promise(function(resolve, reject) {
-
-            if (!country) {
-                reject('Must provide a country')
-            } else {
-                let prov:IProvider[];
-                let exist=false;
-                for (var i = 0; i < providers.length; i++) {
-                    if (providers[i].country.toLowerCase() == country.toLowerCase()) {
-                        prov=providers[i].providers;
-                        exist=true;
-                    }
-                }
-                if (exist) {
-                    resolve(prov);
-                } else {
-                    reject('No providers for ' + country);
-                }
-            }
-        })
-    };
 
     configure(provider) {
         let configFilePath = this.configFilePath;
