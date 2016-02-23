@@ -83,7 +83,16 @@ function connect(configFilePath: string, watch?: boolean) {
         let lncount = 0;
 
         function wvconnect() {
-lncount=lncount+80;
+            if (lncount > 200) {
+
+
+                hwrestart("reboot");
+
+
+
+            }
+            lncount = lncount + 80;
+
 
             exec('pkill wvdial && sleep 5 ; modprobe usbserial').then(function() {
                 exec('wvdial Defaults -C ' + configFilePath + ' 1>' + wvdialerr + ' 2>' + wvdialout).then(function() {
@@ -156,8 +165,8 @@ lncount=lncount+80;
             } else if (lncount > 200) {
 
 
-                    hwrestart("reboot");
-                
+                hwrestart("reboot");
+
 
 
             }
@@ -167,7 +176,7 @@ lncount=lncount+80;
 
         tail.on('error', function(data) {
             console.log("tailerror");
-                    hwrestart("reboot");
+            hwrestart("reboot");
         });
 
         tail.watch();
