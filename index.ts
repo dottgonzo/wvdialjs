@@ -83,9 +83,12 @@ fs.writeFileSync(wvdialout, "");
         
         
         var tail = new Tail(wvdialout, '\n');
-
+let lncount=0;
 tail.on('line', function(data) {
-      console.log("got line:", data);
+    
+    lncount=lncount+1;
+    
+      console.log(lncount+" got line:", data);
     if(data.split("DNS").length==2){
         
                 // setTimeout(function () {
@@ -96,7 +99,14 @@ tail.on('line', function(data) {
         
         tail.unwatch();
         
-        resolve(true)
+        resolve(true);
+        
+    }else if(data.split("Disconnect").length==2){
+        
+        reject(data);
+        
+    } else if(lncount>1000){
+        reject(data);
     }
 
 });
