@@ -71,7 +71,7 @@ function allstrings(configFilePath: string) {
     })
 }
 
-function connect(configFilePath: string, watch?: boolean) {
+function connect(configFilePath: string, watch?: boolean, device?: string) {
     return new Promise<boolean>(function(resolve, reject) {
         // check if wvdial.conf usb is present
         console.log(configFilePath)
@@ -80,40 +80,69 @@ function connect(configFilePath: string, watch?: boolean) {
         let wvdialerr = "/tmp/Wvdial.err"
         let wvdialout = "/tmp/Wvdial.out"
 
-
+        let lncount = 0;
 
         function wvconnect() {
-            console.log(lncount)
- if (lncount > 200) {
+
+            if (lncount > 200) {
 
 
-                
+
                 if (!watch) {
                     tail.unwatch();
                     reject(true);
 
                 } else {
-            console.log("reboot")
+                    console.log("reboot")
                     hwrestart("unplug");
                 }
 
 
 
             }
+            if (device) {
+                setstring(configFilePath, 'Modem', device.replace(/\//g, '\\\/')).then(function() {
 
-            exec('pkill wvdial && sleep 5 ; modprobe usbserial').then(function() {
-                exec('sleep 5; wvdial Defaults -C ' + configFilePath + ' 1>' + wvdialerr + ' 2>' + wvdialout).catch(function() {
-                lncount=lncount+60 
+
+
+                    exec('pkill wvdial && sleep 5 ; modprobe usbserial').then(function() {
+                        exec('sleep 5; wvdial Defaults -C ' + configFilePath + ' 1>' + wvdialerr + ' 2>' + wvdialout).catch(function() {
+                            lncount = lncount + 60
+                            wvconnect()
+                            console.log(lncount)
+                        });
+                    }).catch(function() {
+                        exec('sleep 5; wvdial Defaults -C ' + configFilePath + ' 1>' + wvdialerr + ' 2>' + wvdialout).catch(function() {
+                            lncount = lncount + 60
+                            wvconnect()
+                            console.log(lncount)
+                        });
+                    });
+                }).catch(function(err) {
+                    lncount = lncount + 60
                     wvconnect()
+                    console.log(lncount)
+
                 });
-            }).catch(function() {
-                exec('sleep 5; wvdial Defaults -C ' + configFilePath + ' 1>' + wvdialerr + ' 2>' + wvdialout).catch(function() {
-                   lncount=lncount+60 
-                    wvconnect()
-                });
-            });
 
 
+            } else {
+
+                exec('pkill wvdial && sleep 5 ; modprobe usbserial').then(function() {
+                    exec('sleep 5; wvdial Defaults -C ' + configFilePath + ' 1>' + wvdialerr + ' 2>' + wvdialout).catch(function() {
+                        lncount = lncount + 60
+                        wvconnect()
+                        console.log(lncount)
+                    });
+                }).catch(function() {
+                    exec('sleep 5; wvdial Defaults -C ' + configFilePath + ' 1>' + wvdialerr + ' 2>' + wvdialout).catch(function() {
+                        lncount = lncount + 60
+                        wvconnect()
+                        console.log(lncount)
+                    });
+                });
+
+            }
 
         }
 
@@ -124,7 +153,7 @@ function connect(configFilePath: string, watch?: boolean) {
 
 
         var tail = new Tail(wvdialout, '\n');
-        let lncount = 0;
+
         tail.on('line', function(data) {
 
             lncount = lncount + 1;
@@ -143,7 +172,7 @@ function connect(configFilePath: string, watch?: boolean) {
 
                 lncount = 0;
 
-
+                console.log('ppp connected')
 
                 if (!watch) {
                     tail.unwatch();
@@ -170,8 +199,8 @@ function connect(configFilePath: string, watch?: boolean) {
             } else if (lncount > 200) {
 
 
-                    hwrestart("reboot");
-                
+                hwrestart("reboot");
+
 
 
             }
@@ -181,7 +210,7 @@ function connect(configFilePath: string, watch?: boolean) {
 
         tail.on('error', function(data) {
             console.log("tailerror");
-                    hwrestart("reboot");
+            hwrestart("reboot");
         });
 
         tail.watch();
@@ -211,14 +240,14 @@ export =class WvDial {
         }
     };
 
-    connect(watch?: boolean) {
+    connect(watch?: boolean, dev?: string) {
         let configFilePath = this.configFilePath;
 
         return new Promise<boolean>(function(resolve, reject) {
             console.log('connection');
 
             getstring(configFilePath, 'Modem').then(function() {
-                connect(configFilePath, watch).then(function(answer) {
+                connect(configFilePath, watch, dev).then(function(answer) {
                     resolve(answer);
                 }).catch(function(err) {
                     reject(err);
