@@ -2,6 +2,8 @@ import * as Promise from "bluebird";
 import * as pathExists from "path-exists";
 import * as fs from "fs";
 
+let hwrestart = require('hwrestart');
+
 let exec = require('promised-exec');
 let Tail = require('always-tail');
 
@@ -73,9 +75,25 @@ function connect(configFilePath: string) {
     return new Promise<boolean>(function(resolve, reject) {
 // check if wvdial.conf usb is present
         console.log(configFilePath)
+
         
         let wvdialerr ="/tmp/Wvdial.err"
 let wvdialout ="/tmp/Wvdial.out"
+        
+        
+        
+        function wvconnect(){
+            
+                    
+        exec('pkill wvdial && sleep 5 ; modprobe usbserial').then(function() {
+            exec('wvdial Defaults -C ' + configFilePath + ' 1>'+wvdialerr+' 2>'+wvdialout+' &');
+        }).catch(function() {
+            exec('wvdial Defaults -C ' + configFilePath + ' 1>'+wvdialerr+' 2>'+wvdialout+' &');
+        })
+
+
+
+        }
 
 fs.writeFileSync(wvdialerr, "");
 
@@ -103,10 +121,11 @@ tail.on('line', function(data) {
         
     }else if(data.split("Disconnect").length==2){
         
-        reject(data);
+        wvconnect()
         
-    } else if(lncount>100){
-        reject(data);
+ 
+    } else if(lncount>200){
+hwrestart("unplug");
     }
 
 });
@@ -118,15 +137,7 @@ tail.on('error', function(data) {
  
 tail.watch();
         
-        
-        exec('pkill wvdial && sleep 5 ; modprobe usbserial').then(function() {
-            exec('wvdial Defaults -C ' + configFilePath + ' 1>'+wvdialerr+' 2>'+wvdialout+' &');
-        }).catch(function() {
-            exec('wvdial Defaults -C ' + configFilePath + ' 1>'+wvdialerr+' 2>'+wvdialout+' &');
-        })
-
-
-
+        wvconnect()
 
 
 
