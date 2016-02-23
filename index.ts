@@ -99,6 +99,7 @@ function connect(configFilePath: string, watch?: boolean) {
 
         fs.writeFileSync(wvdialout, "");
 
+console.log(watch)
 
         var tail = new Tail(wvdialout, '\n');
         let lncount = 0;
@@ -121,10 +122,10 @@ function connect(configFilePath: string, watch?: boolean) {
 
                 fs.writeFileSync(wvdialout, "");
 
-
+console.log(watch)
                 if (!watch) {
                     resolve(true);
-
+console.log(watch)
                 }
 
 
@@ -143,7 +144,10 @@ function connect(configFilePath: string, watch?: boolean) {
 
 
             } else if (lncount > 120) {
+               
+               console.log(watch)
                 if (!watch) {
+                    console.log(watch)
                     reject(true);
 
                 } else {
