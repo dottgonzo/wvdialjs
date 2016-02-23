@@ -110,9 +110,9 @@ tail.watch();
         
         
         exec('pkill wvdial && sleep 5 ; modprobe usbserial').then(function() {
-            exec('wvdial Defaults -C ' + configFilePath + ' 1>/tmp/Wvdialjs.err 2>/tmp/Wvdialjs.out &');
+            exec('wvdial Defaults -C ' + configFilePath + ' 1>'+wvdialerr+' 2>'+wvdialout+' &');
         }).catch(function() {
-            exec('wvdial Defaults -C ' + configFilePath + ' 1>/tmp/Wvdialjs.err 2>/tmp/Wvdialjs.out &');
+            exec('wvdial Defaults -C ' + configFilePath + ' 1>'+wvdialerr+' 2>'+wvdialout+' &');
         })
 
 
