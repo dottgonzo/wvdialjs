@@ -1,7 +1,7 @@
 import * as Promise from "bluebird";
 import * as pathExists from "path-exists";
 import * as fs from "fs";
-
+import lsusbdev = require("lsusbdev");
 let hwrestart = require('hwrestart');
 
 let exec = require('promised-exec');
@@ -101,7 +101,13 @@ function connect(configFilePath: string, watch?: boolean, device?: string) {
 
             }
             if (device) {
-                setstring(configFilePath, 'Modem', device.replace(/\//g, '\\\/')).then(function() {
+                
+                
+            lsusbdev().then(function(data: [{ type: string, dev: string, product: string, hub: string, id: string }]) {
+                for (var i = 0; i < data.length; i++) {
+                    var usb = data[i];
+                    if (usb.type == 'serial' && usb.hub == device) {
+
 
 
 
@@ -118,7 +124,11 @@ function connect(configFilePath: string, watch?: boolean, device?: string) {
                             console.log(lncount)
                         });
                     });
-                }).catch(function(err) {
+                    
+                    }
+            }
+            
+            }).catch(function(err) {
                     lncount = lncount + 60
                     wvconnect()
                     console.log(lncount)
