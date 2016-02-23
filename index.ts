@@ -101,34 +101,41 @@ function connect(configFilePath: string, watch?: boolean, device?: string) {
 
             }
             if (device) {
-                
-                
-            lsusbdev().then(function(data: [{ type: string, dev: string, product: string, hub: string, id: string }]) {
-                for (var i = 0; i < data.length; i++) {
-                    var usb = data[i];
-                    if (usb.type == 'serial' && usb.hub == device) {
+
+
+                lsusbdev().then(function(data: [{ type: string, dev: string, product: string, hub: string, id: string }]) {
+                    for (var i = 0; i < data.length; i++) {
+                        var usb = data[i];
+                        if (usb.type == 'serial' && usb.hub == device) {
+
+                            setstring(configFilePath, 'Modem', usb.dev.replace(/\//g, '\\\/')).then(function() {
 
 
 
+                                exec('pkill wvdial && sleep 5 ; modprobe usbserial').then(function() {
+                                    exec('sleep 5; wvdial Defaults -C ' + configFilePath + ' 1>' + wvdialerr + ' 2>' + wvdialout).catch(function() {
+                                        lncount = lncount + 60
+                                        wvconnect()
+                                        console.log(lncount)
+                                    });
+                                }).catch(function() {
+                                    exec('sleep 5; wvdial Defaults -C ' + configFilePath + ' 1>' + wvdialerr + ' 2>' + wvdialout).catch(function() {
+                                        lncount = lncount + 60
+                                        wvconnect()
+                                        console.log(lncount)
+                                    });
+                                });
+                            }).catch(function(err) {
+                                lncount = lncount + 60
+                                wvconnect()
+                                console.log(lncount)
 
-                    exec('pkill wvdial && sleep 5 ; modprobe usbserial').then(function() {
-                        exec('sleep 5; wvdial Defaults -C ' + configFilePath + ' 1>' + wvdialerr + ' 2>' + wvdialout).catch(function() {
-                            lncount = lncount + 60
-                            wvconnect()
-                            console.log(lncount)
-                        });
-                    }).catch(function() {
-                        exec('sleep 5; wvdial Defaults -C ' + configFilePath + ' 1>' + wvdialerr + ' 2>' + wvdialout).catch(function() {
-                            lncount = lncount + 60
-                            wvconnect()
-                            console.log(lncount)
-                        });
-                    });
-                    
+
+                            });
+                        }
                     }
-            }
-            
-            }).catch(function(err) {
+
+                }).catch(function(err) {
                     lncount = lncount + 60
                     wvconnect()
                     console.log(lncount)
