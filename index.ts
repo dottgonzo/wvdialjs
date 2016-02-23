@@ -80,10 +80,10 @@ function connect(configFilePath: string, watch?: boolean) {
         let wvdialerr = "/tmp/Wvdial.err"
         let wvdialout = "/tmp/Wvdial.out"
 
-
+        let lncount = 0;
 
         function wvconnect() {
-
+lncount=lncount+80;
 
             exec('pkill wvdial && sleep 5 ; modprobe usbserial').then(function() {
                 exec('wvdial Defaults -C ' + configFilePath + ' 1>' + wvdialerr + ' 2>' + wvdialout).then(function() {
@@ -110,12 +110,12 @@ function connect(configFilePath: string, watch?: boolean) {
 
 
         var tail = new Tail(wvdialout, '\n');
-        let lncount = 0;
+
         tail.on('line', function(data) {
 
             lncount = lncount + 1;
 
-            console.log(lncount + " got line:", data);
+
             if (data.split("DNS").length == 2) {
         
                 // setTimeout(function () {
@@ -156,14 +156,8 @@ function connect(configFilePath: string, watch?: boolean) {
             } else if (lncount > 200) {
 
 
-                if (!watch) {
-                    tail.unwatch();
-
-                    reject(true);
-
-                } else {
                     hwrestart("reboot");
-                }
+                
 
 
             }
@@ -173,7 +167,7 @@ function connect(configFilePath: string, watch?: boolean) {
 
         tail.on('error', function(data) {
             console.log("tailerror");
-            reject(data);
+                    hwrestart("reboot");
         });
 
         tail.watch();
