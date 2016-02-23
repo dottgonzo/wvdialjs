@@ -14,13 +14,13 @@ let verb = require('verbo');
 
 
 interface IProvider {
-    
-                label:string;
-            apn:string;
-            phone:string;
-            username:string;
-            password:string;
-    
+
+    label: string;
+    apn: string;
+    phone: string;
+    username: string;
+    password: string;
+
 }
 
 
@@ -30,7 +30,7 @@ interface IProvider {
 
 function setstring(configFilePath: string, key, val) {
 
-    return new Promise<{success?:boolean}>(function(resolve, reject) {
+    return new Promise<{ success?: boolean }>(function(resolve, reject) {
         getstring(configFilePath, key).then(function(oldstring: string) {
             exec('sed -i -e "s/' + key[0].toUpperCase() + key.slice(1) + ' = ' + oldstring.replace(/\'/g, '\\"').replace(/\//g, '\\\/') + '/' + key[0].toUpperCase() + key.slice(1) + ' = ' + val.replace(/\"/g, '\\"').replace(/\//g, '\\\/') + '/g" ' + configFilePath + '').then(function(stdout) {
                 resolve({ success: true });
@@ -71,72 +71,97 @@ function allstrings(configFilePath: string) {
     })
 }
 
-function connect(configFilePath: string) {
+function connect(configFilePath: string, watch?: boolean) {
     return new Promise<boolean>(function(resolve, reject) {
-// check if wvdial.conf usb is present
+        // check if wvdial.conf usb is present
         console.log(configFilePath)
 
-        
-        let wvdialerr ="/tmp/Wvdial.err"
-let wvdialout ="/tmp/Wvdial.out"
-        
-        
-        
-        function wvconnect(){
-            
-                    
-        exec('pkill wvdial && sleep 5 ; modprobe usbserial').then(function() {
-            exec('wvdial Defaults -C ' + configFilePath + ' 1>'+wvdialerr+' 2>'+wvdialout+' &');
-        }).catch(function() {
-            exec('wvdial Defaults -C ' + configFilePath + ' 1>'+wvdialerr+' 2>'+wvdialout+' &');
-        })
+
+        let wvdialerr = "/tmp/Wvdial.err"
+        let wvdialout = "/tmp/Wvdial.out"
+
+
+
+        function wvconnect() {
+
+
+            exec('pkill wvdial && sleep 5 ; modprobe usbserial').then(function() {
+                exec('wvdial Defaults -C ' + configFilePath + ' 1>' + wvdialerr + ' 2>' + wvdialout + ' &');
+            }).catch(function() {
+                exec('wvdial Defaults -C ' + configFilePath + ' 1>' + wvdialerr + ' 2>' + wvdialout + ' &');
+            })
 
 
 
         }
 
-fs.writeFileSync(wvdialerr, "");
+        fs.writeFileSync(wvdialerr, "");
 
-fs.writeFileSync(wvdialout, "");
-        
-        
+        fs.writeFileSync(wvdialout, "");
+
+
         var tail = new Tail(wvdialout, '\n');
-let lncount=0;
-tail.on('line', function(data) {
-    
-    lncount=lncount+1;
-    
-      console.log(lncount+" got line:", data);
-    if(data.split("DNS").length==2){
+        let lncount = 0;
+        tail.on('line', function(data) {
+
+            lncount = lncount + 1;
+
+            console.log(lncount + " got line:", data);
+            if (data.split("DNS").length == 2) {
         
                 // setTimeout(function () {
-        //   exec('ip route add default dev ppp0')
-        // }, 30000);
+                //   exec('ip route add default dev ppp0')
+                // }, 30000);
 
 
         
-        tail.unwatch();
-        
-        resolve(true);
-        
-    }else if(data.split("Disconnect").length==2){
-        
-        wvconnect()
-        
- 
-    } else if(lncount>120){
-hwrestart("unplug");
-    }
+                tail.unwatch();
 
-});
- 
- 
-tail.on('error', function(data) {
-   reject(data);
-});
- 
-tail.watch();
-        
+                fs.writeFileSync(wvdialerr, "");
+
+                fs.writeFileSync(wvdialout, "");
+
+
+                if (!watch) {
+                    resolve(true);
+
+                }
+
+
+
+            } else if (data.split("Disconnect").length == 2) {
+
+                if (!watch) {
+                    reject(true);
+
+                } else {
+                    wvconnect()
+                }
+
+
+
+
+
+            } else if (lncount > 120) {
+                if (!watch) {
+                    reject(true);
+
+                } else {
+                    hwrestart("unplug");
+                }
+
+
+            }
+
+        });
+
+
+        tail.on('error', function(data) {
+            reject(data);
+        });
+
+        tail.watch();
+
         wvconnect()
 
 
@@ -153,7 +178,7 @@ tail.watch();
 
 export =class WvDial {
     configFilePath: string;
-    provider:string;
+    provider: string;
     constructor(public path: string) {
         if (path) {
             this.configFilePath = path; // /etc/wvdial.conf
@@ -162,14 +187,14 @@ export =class WvDial {
         }
     };
 
-    connect() {
+    connect(watch?: boolean) {
         let configFilePath = this.configFilePath;
 
         return new Promise<boolean>(function(resolve, reject) {
             console.log('connection');
 
             getstring(configFilePath, 'Modem').then(function() {
-                connect(configFilePath).then(function(answer) {
+                connect(configFilePath, watch).then(function(answer) {
                     resolve(answer);
                 }).catch(function(err) {
                     reject(err);
@@ -182,7 +207,7 @@ export =class WvDial {
 
     setUsb(device: string) {
         let configFilePath = this.configFilePath;
-        return new Promise<{success?:boolean}>(function(resolve, reject) {
+        return new Promise<{ success?: boolean }>(function(resolve, reject) {
 
             if (device) {
                 setstring(configFilePath, 'Modem', device.replace(/\//g, '\\\/')).then(function() {
@@ -203,7 +228,7 @@ export =class WvDial {
     setProvider(provider: IProvider) {
         let configFilePath = this.configFilePath;
 
-        return new Promise<{success?:boolean}>(function(resolve, reject) {
+        return new Promise<{ success?: boolean }>(function(resolve, reject) {
             if (provider.apn) {
                 setstring(configFilePath, 'Init3', 'AT+CGDCONT=1,"ip","' + provider.apn + '",,0,0').then(function() {
                     console.log('ok apn');
@@ -241,7 +266,7 @@ export =class WvDial {
 
     configure(provider) {
         let configFilePath = this.configFilePath;
-        return new Promise<{success?:boolean}>(function(resolve, reject) {
+        return new Promise<{ success?: boolean }>(function(resolve, reject) {
             if (provider) {
                 exec('echo "[Dialer Defaults]" > ' + configFilePath).then(function() {
                     exec('echo \'Init3 = AT+CGDCONT=1,"ip","' + provider.apn + '",,0,0\' >> ' + configFilePath).then(function() {
