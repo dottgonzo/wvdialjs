@@ -73,6 +73,23 @@ function allstrings(configFilePath: string) {
 
 function connect(configFilePath: string, watch?: boolean, device?: string) {
     return new Promise<boolean>(function(resolve, reject) {
+
+
+
+
+            let exist = false;
+            lsusbdev().then(function(data: [{ type: string, dev: string, product: string, hub: string, id: string }]) {
+                for (var i = 0; i < data.length; i++) {
+                    var usb = data[i];
+                    if (usb.type == 'serial' && (device && usb.hub == device) || !device) {
+                        exist = true;
+                    }
+                }
+
+            })
+
+            if (!exist) hwrestart("reboot")
+        
         // check if wvdial.conf usb is present
         console.log(configFilePath)
 
