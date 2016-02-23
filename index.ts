@@ -1,10 +1,13 @@
 import * as Promise from "bluebird";
 import * as pathExists from "path-exists";
+import * as fs from "fs";
+
 let exec = require('promised-exec');
+let Tail = require('always-tail');
+
 let verb = require('verbo');
 //spawn = require('child_process').spawn,
-let waitfor = require('waitfor-promise');
-let netw = require("netw");
+
 
 
 
@@ -68,67 +71,58 @@ function allstrings(configFilePath: string) {
 
 function connect(configFilePath: string) {
     return new Promise<boolean>(function(resolve, reject) {
-
+// check if wvdial.conf usb is present
         console.log(configFilePath)
+        
+        let wvdialerr ="/tmp/Wvdial.err"
+let wvdialout ="/tmp/Wvdial.out"
+
+fs.writeFileSync(wvdialerr, "");
+
+fs.writeFileSync(wvdialout, "");
+        
+        
+        var tail = new Tail(wvdialout, '\n');
+
+tail.on('line', function(data) {
+    
+    if(data.split("DNS").length==2){
+        
+                // setTimeout(function () {
+        //   exec('ip route add default dev ppp0')
+        // }, 30000);
+
+
+        
+        
+        resolve(true)
+    }
+  console.log("got line:", data);
+});
+ 
+ 
+tail.on('error', function(data) {
+   reject(data);
+});
+ 
+tail.watch();
+        
+        
         exec('pkill wvdial && sleep 5 ; modprobe usbserial').then(function() {
-            exec('wvdial Defaults -C ' + configFilePath + ' 1>/dev/null 2>/dev/null &');
+            exec('wvdial Defaults -C ' + configFilePath + ' 1>/tmp/Wvdialjs.err 2>/tmp/Wvdialjs.out &');
         }).catch(function() {
-            exec('wvdial Defaults -C ' + configFilePath + ' 1>/dev/null 2>/dev/null &');
+            exec('wvdial Defaults -C ' + configFilePath + ' 1>/tmp/Wvdialjs.err 2>/tmp/Wvdialjs.out &');
         })
 
 
-        let fun = function() {
-            return new Promise(function(resolve, reject) {
-
-                verb('check connection', 'debug', 'wvdialjs');
-
-                netw().then(function(n) {
-
-
-                    let dev = false
-                    let ip = false;
-                    for (let ns = 0; ns < n.networks.length; ns++) {
-                        if (n.networks[ns].interface == 'ppp0' && n.networks[ns].ip) {
-                            ip = n.networks[ns].ip;
-                            dev = n.networks[ns].interface;
-                        }
-                    }
-                    if (ip) {
-                        console.log("set default route");
-                        exec('ip route add default dev ppp0');
-
-                        resolve(true);
 
 
 
-                    } else {
-                        reject('error');
-                    }
-                }).catch(function(err) {
-                    verb(err, 'error', 'Wvdialjs netwerr');
-                    reject(err);
-
-                })
-            })
 
 
-        }
 
-        waitfor.post(fun, {
-            time: 20000,
-            timeout: 240000
-        }).then(function(answer) {
-            resolve(answer);
 
-        }).catch(function(err) {
-            verb(err, 'error', 'Wvdialjs waitfor');
-            reject(err);
 
-        });
-
-        // setTimeout(function () {
-        //   exec('ip route add default dev ppp0')
-        // }, 30000);
 
 
     })
