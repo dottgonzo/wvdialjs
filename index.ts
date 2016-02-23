@@ -128,8 +128,8 @@ console.log(device)
                         console.log(usb.hub+'=='+device+' '+usb.type)
                         
                         if (usb.type == 'serial' && usb.hub == device) {
-                        console.log('set'+usb.dev.replace(/\//g, '\\\/'))
-                            setstring(configFilePath, 'Modem', usb.dev.replace(/\//g, '\\\/')).then(function() {
+                        console.log('set'+usb.dev)
+                            setstring(configFilePath, 'Modem', usb.dev).then(function() {
 
 
 
