@@ -124,7 +124,7 @@ tail.on('line', function(data) {
         wvconnect()
         
  
-    } else if(lncount>200){
+    } else if(lncount>120){
 hwrestart("unplug");
     }
 
