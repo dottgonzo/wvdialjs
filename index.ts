@@ -87,7 +87,7 @@ function connect(configFilePath: string, watch?: boolean) {
  if (lncount > 200) {
 
             console.log("reboot")
-                    hwrestart("reboot");
+                    hwrestart("unplug");
                 
 
 
