@@ -92,7 +92,7 @@ function connect(configFilePath: string, watch?: boolean) {
                     wvconnect()
                 });
             }).catch(function() {
-                exec('wvdial Defaults -C ' + configFilePath + ' 1>' + wvdialerr + ' 2>' + wvdialout + ' &').then(function() {
+                exec('wvdial Defaults -C ' + configFilePath + ' 1>' + wvdialerr + ' 2>' + wvdialout).then(function() {
                     wvconnect()
                 }).catch(function() {
                     wvconnect()
