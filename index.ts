@@ -86,10 +86,18 @@ function connect(configFilePath: string, watch?: boolean) {
 
 
             exec('pkill wvdial && sleep 5 ; modprobe usbserial').then(function() {
-                exec('wvdial Defaults -C ' + configFilePath + ' 1>' + wvdialerr + ' 2>' + wvdialout + ' &');
+                exec('wvdial Defaults -C ' + configFilePath + ' 1>' + wvdialerr + ' 2>' + wvdialout).then(function() {
+                    wvconnect()
+                }).catch(function() {
+                    wvconnect()
+                });
             }).catch(function() {
-                exec('wvdial Defaults -C ' + configFilePath + ' 1>' + wvdialerr + ' 2>' + wvdialout + ' &');
-            })
+                exec('wvdial Defaults -C ' + configFilePath + ' 1>' + wvdialerr + ' 2>' + wvdialout + ' &').then(function() {
+                    wvconnect()
+                }).catch(function() {
+                    wvconnect()
+                });
+            });
 
 
 
@@ -115,12 +123,12 @@ function connect(configFilePath: string, watch?: boolean) {
                 // }, 30000);
 
 
-        
-
-
                 fs.writeFileSync(wvdialerr, "");
 
                 fs.writeFileSync(wvdialout, "");
+
+                lncount = 0;
+
 
 
                 if (!watch) {
@@ -145,7 +153,7 @@ function connect(configFilePath: string, watch?: boolean) {
 
 
 
-            } else if (lncount > 120) {
+            } else if (lncount > 200) {
 
 
                 if (!watch) {
@@ -154,7 +162,7 @@ function connect(configFilePath: string, watch?: boolean) {
                     reject(true);
 
                 } else {
-                    hwrestart("unplug");
+                    hwrestart("reboot");
                 }
 
 
@@ -164,6 +172,7 @@ function connect(configFilePath: string, watch?: boolean) {
 
 
         tail.on('error', function(data) {
+            console.log("tailerror");
             reject(data);
         });
 
