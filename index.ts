@@ -99,7 +99,7 @@ function connect(configFilePath: string, watch?: boolean) {
 
         fs.writeFileSync(wvdialout, "");
 
-console.log(watch)
+
 
         var tail = new Tail(wvdialout, '\n');
         let lncount = 0;
@@ -116,16 +116,17 @@ console.log(watch)
 
 
         
-                tail.unwatch();
+
 
                 fs.writeFileSync(wvdialerr, "");
 
                 fs.writeFileSync(wvdialout, "");
 
-console.log(watch)
+
                 if (!watch) {
+                    tail.unwatch();
                     resolve(true);
-console.log(watch)
+
                 }
 
 
@@ -133,6 +134,7 @@ console.log(watch)
             } else if (data.split("Disconnect").length == 2) {
 
                 if (!watch) {
+                    tail.unwatch();
                     reject(true);
 
                 } else {
@@ -144,10 +146,11 @@ console.log(watch)
 
 
             } else if (lncount > 120) {
-               
-               console.log(watch)
+
+
                 if (!watch) {
-                    console.log(watch)
+                    tail.unwatch();
+
                     reject(true);
 
                 } else {
