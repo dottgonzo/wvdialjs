@@ -128,7 +128,7 @@ console.log(device)
                         console.log(usb.hub+'=='+device+' '+usb.type)
                         
                         if (usb.type == 'serial' && usb.hub == device) {
-
+                        console.log('set'+usb.dev.replace(/\//g, '\\\/'))
                             setstring(configFilePath, 'Modem', usb.dev.replace(/\//g, '\\\/')).then(function() {
 
 
@@ -147,6 +147,9 @@ console.log(device)
                                     });
                                 });
                             }).catch(function(err) {
+                                
+                                
+                                console.log("set string error")
                                 lncount = lncount + 60
                                 wvconnect()
                                 console.log(lncount)
