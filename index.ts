@@ -83,14 +83,7 @@ function connect(configFilePath: string, watch?: boolean) {
         let lncount = 0;
 
         function wvconnect() {
-            if (lncount > 200) {
 
-
-                hwrestart("reboot");
-
-
-
-            }
             lncount = lncount + 80;
 
 
@@ -123,7 +116,7 @@ function connect(configFilePath: string, watch?: boolean) {
         tail.on('line', function(data) {
 
             lncount = lncount + 1;
-
+            console.log(lncount + " got line:", data);
 
             if (data.split("DNS").length == 2) {
         
