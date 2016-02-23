@@ -86,9 +86,17 @@ function connect(configFilePath: string, watch?: boolean) {
             console.log(lncount)
  if (lncount > 200) {
 
+
+                
+                if (!watch) {
+                    tail.unwatch();
+                    reject(true);
+
+                } else {
             console.log("reboot")
                     hwrestart("unplug");
-                
+                }
+
 
 
             }
