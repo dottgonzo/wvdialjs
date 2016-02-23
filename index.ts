@@ -75,7 +75,7 @@ function connect(configFilePath: string, watch?: boolean, device?: string) {
     return new Promise<boolean>(function(resolve, reject) {
 
 
-
+console.log(device)
 
             let exist = false;
             lsusbdev().then(function(data: [{ type: string, dev: string, product: string, hub: string, id: string }]) {
@@ -83,6 +83,7 @@ function connect(configFilePath: string, watch?: boolean, device?: string) {
                     var usb = data[i];
                     if (usb.type == 'serial' && (device && usb.hub == device) || !device) {
                         exist = true;
+                        console.log("pass1")
                     }
                 }
 
@@ -123,6 +124,9 @@ function connect(configFilePath: string, watch?: boolean, device?: string) {
                 lsusbdev().then(function(data: [{ type: string, dev: string, product: string, hub: string, id: string }]) {
                     for (var i = 0; i < data.length; i++) {
                         var usb = data[i];
+                        
+                        console.log(usb.hub)
+                        
                         if (usb.type == 'serial' && usb.hub == device) {
 
                             setstring(configFilePath, 'Modem', usb.dev.replace(/\//g, '\\\/')).then(function() {
