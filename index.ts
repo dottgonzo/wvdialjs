@@ -105,7 +105,7 @@ tail.on('line', function(data) {
         
         reject(data);
         
-    } else if(lncount>1000){
+    } else if(lncount>100){
         reject(data);
     }
 
