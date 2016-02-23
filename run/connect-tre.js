@@ -1,15 +1,13 @@
-var verb=require('verbo'),
-Wv=require('../index.js'),
-wvdialjs=new Wv('/etc/wvdial.conf'),
-netw= require('netw');
+var verb=require('verbo');
+var Wv=require('../index.js');
+var wvdialjs=new Wv('/etc/wvdial.conf');
+
+
 
 
 wvdialjs.connect().then(function(){
   verb('ok','info','connection')
 
-  netw().then(function(answer){
-    verb(answer)
-  })
 }).catch(function(err){
 
 
