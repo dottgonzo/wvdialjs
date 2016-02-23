@@ -85,7 +85,7 @@ fs.writeFileSync(wvdialout, "");
         var tail = new Tail(wvdialout, '\n');
 
 tail.on('line', function(data) {
-    
+      console.log("got line:", data);
     if(data.split("DNS").length==2){
         
                 // setTimeout(function () {
@@ -94,10 +94,11 @@ tail.on('line', function(data) {
 
 
         
+        tail.unwatch();
         
         resolve(true)
     }
-  console.log("got line:", data);
+
 });
  
  
