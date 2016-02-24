@@ -5,10 +5,7 @@ var wvdialjs=new Wv('/etc/wvdial.conf');
 
 
 
-wvdialjs.connect(true).then(function(){
-  verb('ok','info','connection')
-
-}).catch(function(err){
+wvdialjs.connect(true).catch(function(err){
 
 
   verb(err,'error','connection')
