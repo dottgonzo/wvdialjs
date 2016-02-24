@@ -469,13 +469,20 @@ export =class WvDial {
         let configFilePath = this.configFilePath;
         return new Promise<{ success?: boolean }>(function(resolve, reject) {
             if (provider) {
+                
+       
                 if (!provider.phone) provider.phone = '*99#';
                 if (!provider.username) provider.username = '';
                 if (!provider.password) provider.password = '';
-
+         let setprovider:IProvider={
+                    apn:provider.apn,
+                    phone:provider.phone,
+                    username:provider.username,
+                    password:provider.password
+                };
                 if (device) {
 
-                    setprov(this.configFilePath, provider).then(function() {
+                    setprov(this.configFilePath, setprovider).then(function() {
                         lsusbdev().then(function(data) {
                             let devto: any = false;
                             for (var i = 0; i < data.length; i++) {
