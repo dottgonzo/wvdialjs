@@ -13,15 +13,6 @@ let verb = require('verbo');
 
 
 
-interface IProvider {
-
-    label: string;
-    apn: string;
-    phone: string;
-    username: string;
-    password: string;
-
-}
 
 interface IProviderCF {
 
