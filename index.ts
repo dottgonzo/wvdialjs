@@ -133,25 +133,12 @@ console.log(device)
 
 
 
-                                exec('pkill wvdial && sleep 5 ; modprobe usbserial').then(function() {
-                                    exec('sleep 5; wvdial Defaults -C ' + configFilePath + ' 1>' + wvdialerr + ' 2>' + wvdialout).catch(function() {
-                                        lncount = lncount + 60
-                                        wvconnect()
-                                        console.log(lncount)
-                                    });
-                                }).catch(function() {
-                                    exec('sleep 5; wvdial Defaults -C ' + configFilePath + ' 1>' + wvdialerr + ' 2>' + wvdialout).catch(function() {
-                                        lncount = lncount + 60
-                                        wvconnect()
-                                        console.log(lncount)
-                                    });
-                                });
                             }).catch(function(err) {
                                 
                                 
                                 console.log(err+" set string error")
                                 lncount = lncount + 30
-                               // wvconnect()
+                                wvconnect()
                                 console.log(lncount)
 
 
