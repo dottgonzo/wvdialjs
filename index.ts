@@ -482,7 +482,7 @@ export =class WvDial {
                 };
                 if (device) {
 
-                    setprov(this.configFilePath, setprovider).then(function() {
+                    setprov(configFilePath, setprovider).then(function() {
                         lsusbdev().then(function(data) {
                             let devto: any = false;
                             for (var i = 0; i < data.length; i++) {
