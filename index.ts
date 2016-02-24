@@ -15,7 +15,7 @@ let verb = require('verbo');
 
 interface IProvider {
 
-    label?: string;
+    label: string;
     apn: string;
     phone: string;
     username: string;
@@ -23,7 +23,15 @@ interface IProvider {
 
 }
 
+interface IProviderCF {
 
+    label?: string;
+    apn: string;
+    phone?: string;
+    username?: string;
+    password?: string;
+
+}
 // modprobe usbserial
 // wvdialconf
 // wvdial Defaults 1>/dev/null 2>/dev/null
@@ -338,8 +346,13 @@ export =class WvDial {
         })
     };
 
-    setProvider(provider: IProvider) {
+    setProvider(provider: IProviderCF) {
         let configFilePath = this.configFilePath;
+
+
+        if (!provider.phone) provider.phone = '*99#';
+        if (!provider.username) provider.username = '';
+        if (!provider.password) provider.password = '';
 
         return new Promise<{ success?: boolean }>(function(resolve, reject) {
             if (provider.apn) {
@@ -367,20 +380,24 @@ export =class WvDial {
         return allstrings(this.configFilePath);
     };
 
-    setParam(key, val) {
+    setParam(key:string, val:string) {
         return setstring(this.configFilePath, key, val);
     };
 
-    getParam(param) {
+    getParam(param:string) {
         return getstring(this.configFilePath, param);
     };
 
 
 
-    configure(provider) {
+    configure(provider: IProviderCF) {
         let configFilePath = this.configFilePath;
         return new Promise<{ success?: boolean }>(function(resolve, reject) {
             if (provider) {
+                if (!provider.phone) provider.phone = '*99#';
+                if (!provider.username) provider.username = '';
+                if (!provider.password) provider.password = '';
+
                 exec('echo "[Dialer Defaults]" > ' + configFilePath).then(function() {
                     exec('echo \'Init3 = AT+CGDCONT=1,"ip","' + provider.apn + '",,0,0\' >> ' + configFilePath).then(function() {
                         exec('echo "Phone = ' + provider.phone + '" >> ' + configFilePath).then(function() {
