@@ -126,9 +126,8 @@ function connect(configFilePath: string, watch?: boolean, device?: string) {
                     for (var i = 0; i < data.length; i++) {
                         var usb = data[i];
 
-                        console.log(usb.hub + '==' + device + ' ' + usb.type)
 
-                        if (usb.type == 'serial' && usb.hub == device) {
+                        if (usb.type == 'serial' && usb.hub == device && !usb.dev) {
                             console.log('set ' + usb.dev)
 
 
