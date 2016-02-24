@@ -374,10 +374,26 @@ export =class WvDial {
                 connect(configFilePath, watch, dev).then(function(answer) {
                     resolve(answer);
                 }).catch(function(err) {
-                    reject(err);
+
+            if (!watch) {
+
+                reject('rrrrrr');
+
+            } else {
+                hwrestart("unplug");
+            }
+
+
                 })
             }).catch(function() {
-                reject('err1');
+          if (!watch) {
+
+                reject('errrr');
+
+            } else {
+                hwrestart("unplug");
+            }
+
             });
         })
     };
