@@ -265,7 +265,7 @@ function connect(configFilePath: string, watch?: boolean, device?: string) {
                     reject(true);
 
                 } else {
-                    hwrestart("reboot");
+                    hwrestart("unplug");
                 }
 
 

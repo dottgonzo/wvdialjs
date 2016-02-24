@@ -13,7 +13,7 @@ setTimeout(function(){
     
    console.log(wvdialjs.status()) 
     
-},50000)
+},240000)
 }).catch(function(err){
   verb(err,"error","error")
 })
