@@ -75,21 +75,21 @@ function connect(configFilePath: string, watch?: boolean, device?: string) {
     return new Promise<boolean>(function(resolve, reject) {
 
 
-console.log(device)
+        console.log(device)
 
-            let exist = false;
-            lsusbdev().then(function(data: [{ type: string, dev: string, product: string, hub: string, id: string }]) {
-                for (var i = 0; i < data.length; i++) {
-                    var usb = data[i];
-                    if (usb.type == 'serial' && (device && usb.hub == device) || !device) {
-                        exist = true;
-                        console.log("pass1")
-                    }
+        let exist = false;
+        lsusbdev().then(function(data: [{ type: string, dev: string, product: string, hub: string, id: string }]) {
+            for (var i = 0; i < data.length; i++) {
+                var usb = data[i];
+                if (usb.type == 'serial' && (device && usb.hub == device) || !device) {
+                    exist = true;
+                    console.log("pass1")
                 }
+            }
 
-            })
+        })
 
-            if (!exist) hwrestart("reboot")
+        if (!exist) hwrestart("reboot")
         
         // check if wvdial.conf usb is present
         console.log(configFilePath)
@@ -122,29 +122,62 @@ console.log(device)
 
 
                 lsusbdev().then(function(data) {
+                    let devto: any = false;
                     for (var i = 0; i < data.length; i++) {
                         var usb = data[i];
-                        
-                        console.log(usb.hub+'=='+device+' '+usb.type)
-                        
+
+                        console.log(usb.hub + '==' + device + ' ' + usb.type)
+
                         if (usb.type == 'serial' && usb.hub == device) {
-                        console.log('set '+usb.dev)
-                            setstring(configFilePath, 'Modem', usb.dev).then(function() {
+                            console.log('set ' + usb.dev)
 
 
-
-                            }).catch(function(err) {
-                                
-                                
-                                console.log(err+" set string error")
-                                lncount = lncount + 30
-                                wvconnect()
-                                console.log(lncount)
+                            devto = usb.dev;
 
 
-                            });
                         }
                     }
+
+
+                    if (devto) {
+                        setstring(configFilePath, 'Modem', usb.dev).then(function() {
+
+
+
+                            exec('pkill wvdial && sleep 5 ; modprobe usbserial').then(function() {
+                                exec('sleep 5; wvdial Defaults -C ' + configFilePath + ' 1>' + wvdialerr + ' 2>' + wvdialout).catch(function() {
+                                    lncount = lncount + 60
+                                    wvconnect()
+                                    console.log(lncount)
+                                });
+                            }).catch(function() {
+                                exec('sleep 5; wvdial Defaults -C ' + configFilePath + ' 1>' + wvdialerr + ' 2>' + wvdialout).catch(function() {
+                                    lncount = lncount + 60
+                                    wvconnect()
+                                    console.log(lncount)
+                                });
+                            });
+                        }).catch(function(err) {
+
+
+                            console.log(err + " set string error")
+                            lncount = lncount + 30
+                            wvconnect()
+                            console.log(lncount)
+
+
+                        });
+                    } else {
+
+                        console.log(" err2")
+                        lncount = lncount + 30
+                        wvconnect()
+                        console.log(lncount)
+
+
+
+                    }
+
 
                 }).catch(function(err) {
                     lncount = lncount + 60
