@@ -15,7 +15,7 @@ let verb = require('verbo');
 
 interface IProvider {
 
-    label: string;
+    label?: string;
     apn: string;
     phone: string;
     username: string;
