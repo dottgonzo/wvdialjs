@@ -1,10 +1,10 @@
-var verb=require('verbo');
-var Wv=require('../index.js');
-var wvdialjs=new Wv('/etc/wvdial.conf');
+let verb=require('verbo');
+import Wv=require('../index');
+let wvdialjs=new Wv('/etc/wvdial.conf',"1-1.4");
 
 
 wvdialjs.configure({"label":"Tre Ricaricabile","apn":"tre.it","phone":"*99#","username":"tre","password":"tre"}).then(function(data){
-wvdialjs.connect(true,"1-1.4").then(function(){
+wvdialjs.connect(true).then(function(){
   verb('ok','info','connection')
 
 }).catch(function(err){
