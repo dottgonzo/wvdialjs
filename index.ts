@@ -140,7 +140,7 @@ function connect(configFilePath: string, watch?: boolean, device?: string) {
 
 
                     if (devto) {
-                        setstring(configFilePath, 'Modem', usb.dev).then(function() {
+                        setstring(configFilePath, 'Modem', devto).then(function() {
 
 
 
