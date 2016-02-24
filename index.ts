@@ -121,14 +121,14 @@ console.log(device)
             if (device) {
 
 
-                lsusbdev().then(function(data: [{ type: string, dev: string, product: string, hub: string, id: string }]) {
+                lsusbdev().then(function(data) {
                     for (var i = 0; i < data.length; i++) {
                         var usb = data[i];
                         
                         console.log(usb.hub+'=='+device+' '+usb.type)
                         
                         if (usb.type == 'serial' && usb.hub == device) {
-                        console.log('set'+usb.dev)
+                        console.log('set '+usb.dev)
                             setstring(configFilePath, 'Modem', usb.dev).then(function() {
 
 
@@ -149,9 +149,9 @@ console.log(device)
                             }).catch(function(err) {
                                 
                                 
-                                console.log("set string error")
-                                lncount = lncount + 60
-                                wvconnect()
+                                console.log(err+" set string error")
+                                lncount = lncount + 30
+                               // wvconnect()
                                 console.log(lncount)
 
 
