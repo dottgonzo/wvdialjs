@@ -242,20 +242,6 @@ function connect(configFilePath: string, watch?: boolean, device?: string) {
 
 
 
-            } else if (data.split("Disconnect").length == 2) {
-
-                if (!watch) {
-                    tail.unwatch();
-                    reject(true);
-
-                } else {
-                    wvconnect()
-                }
-
-
-
-
-
             } else if (lncount > 200) {
 
 
@@ -270,7 +256,21 @@ function connect(configFilePath: string, watch?: boolean, device?: string) {
 
         tail.on('error', function(data) {
             console.log("tailerror");
-            hwrestart("reboot");
+
+
+            if (!watch) {
+                tail.unwatch();
+                reject(true);
+
+            } else {
+                hwrestart("reboot");
+            }
+
+
+
+
+
+
         });
 
         tail.watch();
