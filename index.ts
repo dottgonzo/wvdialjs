@@ -347,8 +347,8 @@ function setprov(configFilePath, provider: IProviderCF) {
 };
 
 interface ClassOpt {
-    configFilePath: string;
-    provider: IProviderCF;
+    configFilePath?: string;
+    provider?: IProviderCF;
     device?: string;
 }
 
