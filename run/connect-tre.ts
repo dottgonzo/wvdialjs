@@ -1,21 +1,16 @@
 let verb=require('verbo');
 import Wv=require('../index');
 
-
 let config={
     configFilePath:'/etc/wvdial.conf',
-    provider:{"label":"Tre Ricaricabile","apn":"tre.it","phone":"*99#","username":"tre","password":"tre"},
-    device:"1-1.4"
+    provider:{"label":"Tre Ricaricabile","apn":"tre.it","phone":"*99#","username":"tre","password":"tre"}
 }
 
 let wvdialjs=new Wv(config);
 
 
-wvdialjs.configure().then(function(data){
-wvdialjs.connect(true).then(function(){
-  verb('ok','info','connection')
-
-}).catch(function(err){
+wvdialjs.configure(true).then(function(){
+wvdialjs.connect(true).catch(function(err){
 
 
   verb(err,'error','connection')
@@ -28,6 +23,8 @@ setTimeout(function(){
 }).catch(function(err){
   verb(err,"error","error")
 })
+
+
 
 
 

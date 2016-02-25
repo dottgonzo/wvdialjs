@@ -249,11 +249,11 @@ function connect(configFilePath: string, watch?: boolean, device?: string) {
 
                 console.log('ppp connected')
 
-            //    if (!watch) {
-            //        tail.unwatch();
-             //       resolve(true);
+                //    if (!watch) {
+                //        tail.unwatch();
+                //       resolve(true);
 
-            //    }
+                //    }
 
 
 
@@ -346,22 +346,33 @@ function setprov(configFilePath, provider: IProviderCF) {
 
 };
 
+interface ClassOpt {
+    configFilePath: string;
+    provider: IProviderCF;
+    device?: string;
+}
 
 export =class WvDial {
     configFilePath: string;
     provider: IProviderCF;
-    device: any;
-    constructor(path: string, device?: string) {
-        if (path) {
-            this.configFilePath = path; // /etc/wvdial.conf
+    device;
+    constructor(conf: ClassOpt) {
+        if (conf.configFilePath) {
+            this.configFilePath = conf.configFilePath; // /etc/wvdial.conf
         } else {
             this.configFilePath = '/etc/wvdial.conf';
         }
-        if (device) {
-            this.device = device; // /etc/wvdial.conf
-        } else {
-            this.device = false; // /etc/wvdial.conf
+        if (conf.provider) {
+            if (!conf.provider.phone) conf.provider.phone = '*99#';
+            if (!conf.provider.username) conf.provider.username = '';
+            if (!conf.provider.password) conf.provider.password = '';
+            this.provider = conf.provider; // /etc/wvdial.conf
         }
+
+        if (conf.device) {
+            this.device = conf.device; // /etc/wvdial.conf
+        }
+
     };
 
     connect(watch?: boolean) {
@@ -375,24 +386,24 @@ export =class WvDial {
                     resolve(answer);
                 }).catch(function(err) {
 
-            if (!watch) {
+                    if (!watch) {
 
-                reject('rrrrrr');
+                        reject('rrrrrr');
 
-            } else {
-                hwrestart("unplug");
-            }
+                    } else {
+                        hwrestart("unplug");
+                    }
 
 
                 })
             }).catch(function() {
-          if (!watch) {
+                if (!watch) {
 
-                reject('errrr');
+                    reject('errrr');
 
-            } else {
-                hwrestart("unplug");
-            }
+                } else {
+                    hwrestart("unplug");
+                }
 
             });
         })
@@ -419,6 +430,7 @@ export =class WvDial {
     };
 
     setProvider(provider: IProviderCF) {
+        this.provider = provider;
         return setprov(this.configFilePath, provider)
 
     };
@@ -440,10 +452,14 @@ export =class WvDial {
         return mobilestatus
 
     }
-    setdev(device: string) {
+    setdev(device?: string) {
+
+        if (device) {
+            this.device = device;
+        }
         let setdev = this.device;
         let configFilePath = this.configFilePath;
-        return new Promise<{ success?: boolean }>(function(resolve, reject) {
+        return new Promise<boolean>(function(resolve, reject) {
             lsusbdev().then(function(data) {
                 let devto: any = false;
                 for (var i = 0; i < data.length; i++) {
@@ -464,7 +480,7 @@ export =class WvDial {
                 if (devto) {
                     setstring(configFilePath, 'Modem', devto).then(function() {
                         setdev = device;
-                        resolve({ success: true });
+                        resolve(true);
                     }).catch(function(err) {
                         reject({ error: 'error on setstring ' });
                     })
@@ -480,25 +496,19 @@ export =class WvDial {
         })
 
     }
-    configure(provider: IProviderCF) {
+    configure(reset?: boolean) {
+        let provider = this.provider;
+
         let device = this.device;
+
+
         let configFilePath = this.configFilePath;
         return new Promise<{ success?: boolean }>(function(resolve, reject) {
             if (provider) {
-                
-       
-                if (!provider.phone) provider.phone = '*99#';
-                if (!provider.username) provider.username = '';
-                if (!provider.password) provider.password = '';
-         let setprovider:IProvider={
-                    apn:provider.apn,
-                    phone:provider.phone,
-                    username:provider.username,
-                    password:provider.password
-                };
-                if (device) {
 
-                    setprov(configFilePath, setprovider).then(function() {
+                if (!reset && device) {
+
+                    setprov(configFilePath, provider).then(function() {
                         lsusbdev().then(function(data) {
                             let devto: any = false;
                             for (var i = 0; i < data.length; i++) {
@@ -536,7 +546,7 @@ export =class WvDial {
                         reject({ error: 'error on setprov ' });
                     })
 
-                } else {
+                } else if (reset) {
 
                     exec('echo "[Dialer Defaults]" > ' + configFilePath).then(function() {
                         exec('echo \'Init3 = AT+CGDCONT=1,"ip","' + provider.apn + '",,0,0\' >> ' + configFilePath).then(function() {
@@ -565,6 +575,8 @@ export =class WvDial {
                     });
 
 
+                } else {
+                    reject({ error: 'miss configuration' });
                 }
 
 
