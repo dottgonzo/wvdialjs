@@ -104,7 +104,7 @@ function connect(configFilePath: string, watch?: boolean, device?: string) {
 
         })
 
-        if (!exist) hwrestart("reboot")
+        if (!exist) hwrestart("unplug")
         
         // check if wvdial.conf usb is present
         console.log(configFilePath)
@@ -383,7 +383,13 @@ export =class WvDial {
 
             getstring(configFilePath, 'Modem').then(function() {
                 connect(configFilePath, watch, dev).then(function(answer) {
-                    resolve(answer);
+                    if (!watch) {
+
+                        resolve(answer);
+
+                    } else {
+                        hwrestart("unplug");
+                    }
                 }).catch(function(err) {
 
                     if (!watch) {
