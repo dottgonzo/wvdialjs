@@ -96,15 +96,17 @@ function connect(configFilePath: string, watch?: boolean, device?: string) {
         lsusbdev().then(function(data: [{ type: string, dev: string, product: string, hub: string, id: string }]) {
             for (var i = 0; i < data.length; i++) {
                 var usb = data[i];
-                if (usb.type == 'serial' && (device && usb.hub == device) || !device) {
+                if ((usb.type == 'serial' && device && usb.hub == device) || !device) {
                     exist = true;
                     console.log("pass1")
                 }
             }
-
+        if (!exist&&device) {
+            console.log("no device, rebooting")
+            hwrestart("unplug")}
         })
 
-        if (!exist) hwrestart("unplug")
+
         
         // check if wvdial.conf usb is present
         console.log(configFilePath)
