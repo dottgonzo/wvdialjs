@@ -1,6 +1,6 @@
 {
   "name": "wvdialjs",
-  "version": "0.0.92",
+  "version": "0.0.93",
   "description": "",
   "main": "index.js",
   "scripts": {
@@ -23,22 +23,24 @@
     "always-tail": "^0.2.0",
     "bluebird": "^3.1.1",
     "hwrestart": "0.0.12",
-    "lsusbdev": "0.0.9",
+    "lsusbdev": "1.0.1",
     "path-exists": "^2.0.0",
     "promised-exec": "^1.0.1",
     "verbo": "0.0.9"
   },
   "devDependencies": {
-    "gulp": "^3.9.0",
-    "gulp-bump": "^1.0.0",
-    "gulp-concat": "^2.6.0",
-    "gulp-filter": "^3.0.1",
-    "gulp-git": "^1.6.1",
-    "gulp-mocha": "^2.2.0",
-    "gulp-prompt": "^0.1.2",
-    "gulp-sourcemaps": "^1.6.0",
+    "chai": "^3.5.0",
+    "gulp": "^3.9.1",
+    "gulp-bump": "^2.5.1",
+    "gulp-concat": "^2.6.1",
+    "gulp-filter": "^4.0.0",
+    "gulp-mocha": "^3.0.1",
+    "gulp-prompt": "^0.2.0",
+    "gulp-sourcemaps": "^1.9.1",
     "gulp-tag-version": "^1.3.0",
-    "gulp-typescript": "^2.10.0",
-    "mocha": "^2.3.4"
+    "gulp-typescript": "^3.1.3",
+    "gulp-util": "^3.0.7",
+    "mocha": "^3.2.0",
+    "typescript": "^2.0.10"
   }
 }

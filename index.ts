@@ -1,13 +1,13 @@
 import * as Promise from "bluebird";
 import * as pathExists from "path-exists";
 import * as fs from "fs";
-import lsusbdev = require("lsusbdev");
-let hwrestart = require('hwrestart');
+import lsusbdev from "lsusbdev";
+const hwrestart = require('hwrestart');
 
-let exec = require('promised-exec');
-let Tail = require('always-tail');
+const exec = require('promised-exec');
+const Tail = require('always-tail');
 
-let verb = require('verbo');
+const verb = require('verbo');
 
 let mobilestatus = false;
 
@@ -62,7 +62,7 @@ function getstring(configFilePath: string, param) {
         allstrings(configFilePath).then(function(data) {
             let test = false;
             for (var i = 0; i < Object.keys(data).length; i++) {
-                if (Object.keys(data)[i] == (param[0].toUpperCase() + param.slice(1))) {
+                if (Object.keys(data)[i] === (param[0].toUpperCase() + param.slice(1))) {
                     test = true;
                     resolve(data[Object.keys(data)[i]]);
                 }
@@ -96,7 +96,7 @@ function connect(configFilePath: string, watch?: boolean, device?: string) {
         lsusbdev().then(function(data: [{ type: string, dev: string, product: string, hub: string, id: string }]) {
             for (var i = 0; i < data.length; i++) {
                 var usb = data[i];
-                if ((usb.type == 'serial' && device && usb.hub == device) || !device) {
+                if ((usb.type === 'serial' && device && usb.hub === device) || !device) {
                     exist = true;
                     console.log("pass1")
                 }
@@ -144,7 +144,7 @@ function connect(configFilePath: string, watch?: boolean, device?: string) {
                         var usb = data[i];
 
 
-                        if (usb.type == 'serial' && usb.hub == device && !devto) {
+                        if (usb.type === 'serial' && usb.hub === device && !devto) {
                             console.log('set ' + usb.dev)
 
 
@@ -236,7 +236,7 @@ function connect(configFilePath: string, watch?: boolean, device?: string) {
             lncount = lncount + 1;
 
 
-            if (data.split("DNS").length == 2) {
+            if (data.split("DNS").length === 2) {
         
                 // setTimeout(function () {
                 //   exec('ip route add default dev ppp0')
@@ -354,7 +354,7 @@ interface ClassOpt {
     device?: string;
 }
 
-export =class WvDial {
+export default class WvDial {
     configFilePath: string;
     provider: IProviderCF;
     device;
@@ -474,7 +474,7 @@ export =class WvDial {
                     var usb = data[i];
 
 
-                    if (usb.type == 'serial' && usb.hub == device && !devto) {
+                    if (usb.type === 'serial' && usb.hub === device && !devto) {
                         console.log('set ' + usb.dev)
 
 
@@ -523,7 +523,7 @@ export =class WvDial {
                                 var usb = data[i];
 
 
-                                if (usb.type == 'serial' && usb.hub == device && !devto) {
+                                if (usb.type === 'serial' && usb.hub === device && !devto) {
                                     console.log('set ' + usb.dev)
 
 
