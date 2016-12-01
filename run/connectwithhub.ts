@@ -11,7 +11,7 @@ let config = {
 let wvdialjs = new Wv(config);
 
 
-wvdialjs.configure().then(function (data) {
+wvdialjs.configure(true).then(function (data) {
   console.log(data)
   wvdialjs.connect(true).then(function () {
     verb('ok', 'info', 'connection')
