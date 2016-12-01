@@ -45,21 +45,21 @@ interface IProvider {
 
 function setstring(configFilePath: string, key, val) {
 
-    return new Promise<{ success?: boolean }>(function(resolve, reject) {
-        getstring(configFilePath, key).then(function(oldstring: string) {
-            exec('sed -i -e "s/' + key[0].toUpperCase() + key.slice(1) + ' = ' + oldstring.replace(/\'/g, '\\"').replace(/\//g, '\\\/') + '/' + key[0].toUpperCase() + key.slice(1) + ' = ' + val.replace(/\"/g, '\\"').replace(/\//g, '\\\/') + '/g" ' + configFilePath + '').then(function(stdout) {
+    return new Promise<{ success?: boolean }>(function (resolve, reject) {
+        getstring(configFilePath, key).then(function (oldstring: string) {
+            exec('sed -i -e "s/' + key[0].toUpperCase() + key.slice(1) + ' = ' + oldstring.replace(/\'/g, '\\"').replace(/\//g, '\\\/') + '/' + key[0].toUpperCase() + key.slice(1) + ' = ' + val.replace(/\"/g, '\\"').replace(/\//g, '\\\/') + '/g" ' + configFilePath + '').then(function (stdout) {
                 resolve({ success: true });
-            }).catch(function(err) {
+            }).catch(function (err) {
                 reject({ error: err });
             });
-        }).catch(function(err) {
+        }).catch(function (err) {
             reject({ error: err });
         });
     });
 }
 function getstring(configFilePath: string, param) {
-    return new Promise(function(resolve, reject) {
-        allstrings(configFilePath).then(function(data) {
+    return new Promise(function (resolve, reject) {
+        allstrings(configFilePath).then(function (data) {
             let test = false;
             for (var i = 0; i < Object.keys(data).length; i++) {
                 if (Object.keys(data)[i] === (param[0].toUpperCase() + param.slice(1))) {
@@ -70,30 +70,30 @@ function getstring(configFilePath: string, param) {
             if (!test) {
                 reject({ error: "wrong param" });
             }
-        }).catch(function(err) {
+        }).catch(function (err) {
             reject({ error: err });
         })
     })
 }
 function allstrings(configFilePath: string) {
-    return new Promise(function(resolve, reject) {
+    return new Promise(function (resolve, reject) {
 
-        exec(__dirname + '/wvdial.sh  -t "get" -c"' + configFilePath + '"').then(function(data) {
+        exec(__dirname + '/wvdial.sh  -t "get" -c"' + configFilePath + '"').then(function (data) {
             resolve(JSON.parse(data));
-        }).catch(function(err) {
+        }).catch(function (err) {
             reject(err);
         })
     })
 }
 
 function connect(configFilePath: string, watch?: boolean, device?: string) {
-    return new Promise<boolean>(function(resolve, reject) {
+    return new Promise<boolean>(function (resolve, reject) {
 
 
         console.log(device)
 
         let exist = false;
-        lsusbdev().then(function(data: [{ type: string, dev: string, product: string, hub: string, id: string }]) {
+        lsusbdev().then(function (data: [{ type: string, dev: string, product: string, hub: string, id: string }]) {
             for (var i = 0; i < data.length; i++) {
                 var usb = data[i];
                 if ((usb.type === 'serial' && device && usb.hub === device) || !device) {
@@ -101,13 +101,16 @@ function connect(configFilePath: string, watch?: boolean, device?: string) {
                     console.log("pass1")
                 }
             }
-        if (!exist&&device) {
-            console.log("no device, rebooting")
-            hwrestart("unplug")}
+            if (!exist && device) {
+                console.log("no device, rebooting")
+                setTimeout(() => {
+                    hwrestart("unplug")
+                }, 2000)
+            }
         })
 
 
-        
+
         // check if wvdial.conf usb is present
         console.log(configFilePath)
 
@@ -128,8 +131,13 @@ function connect(configFilePath: string, watch?: boolean, device?: string) {
                     reject(true);
 
                 } else {
-                    console.log("reboot")
-                    hwrestart("unplug");
+                    console.log("no watch reboot")
+
+                    setTimeout(() => {
+                        hwrestart("unplug")
+                    }, 2000)
+
+
                 }
 
 
@@ -138,7 +146,7 @@ function connect(configFilePath: string, watch?: boolean, device?: string) {
             if (device) {
 
 
-                lsusbdev().then(function(data) {
+                lsusbdev().then(function (data) {
                     let devto: any = false;
                     for (var i = 0; i < data.length; i++) {
                         var usb = data[i];
@@ -156,24 +164,24 @@ function connect(configFilePath: string, watch?: boolean, device?: string) {
 
 
                     if (devto) {
-                        setstring(configFilePath, 'Modem', devto).then(function() {
+                        setstring(configFilePath, 'Modem', devto).then(function () {
 
 
 
-                            exec('pkill wvdial && sleep 5 ; modprobe usbserial').then(function() {
-                                exec('sleep 5; wvdial Defaults -C ' + configFilePath + ' 1>' + wvdialerr + ' 2>' + wvdialout).catch(function() {
+                            exec('pkill wvdial && sleep 5 ; modprobe usbserial').then(function () {
+                                exec('sleep 5; wvdial Defaults -C ' + configFilePath + ' 1>' + wvdialerr + ' 2>' + wvdialout).catch(function () {
                                     lncount = lncount + 60
                                     wvconnect()
                                     console.log(lncount)
                                 });
-                            }).catch(function() {
-                                exec('sleep 5; wvdial Defaults -C ' + configFilePath + ' 1>' + wvdialerr + ' 2>' + wvdialout).catch(function() {
+                            }).catch(function () {
+                                exec('sleep 5; wvdial Defaults -C ' + configFilePath + ' 1>' + wvdialerr + ' 2>' + wvdialout).catch(function () {
                                     lncount = lncount + 60
                                     wvconnect()
                                     console.log(lncount)
                                 });
                             });
-                        }).catch(function(err) {
+                        }).catch(function (err) {
 
 
                             console.log(err + " set string error")
@@ -195,7 +203,7 @@ function connect(configFilePath: string, watch?: boolean, device?: string) {
                     }
 
 
-                }).catch(function(err) {
+                }).catch(function (err) {
                     lncount = lncount + 60
                     wvconnect()
                     console.log(lncount)
@@ -205,14 +213,14 @@ function connect(configFilePath: string, watch?: boolean, device?: string) {
 
             } else {
 
-                exec('pkill wvdial && sleep 5 ; modprobe usbserial').then(function() {
-                    exec('sleep 5; wvdial Defaults -C ' + configFilePath + ' 1>' + wvdialerr + ' 2>' + wvdialout).catch(function() {
+                exec('pkill wvdial && sleep 5 ; modprobe usbserial').then(function () {
+                    exec('sleep 5; wvdial Defaults -C ' + configFilePath + ' 1>' + wvdialerr + ' 2>' + wvdialout).catch(function () {
                         lncount = lncount + 60
                         wvconnect()
                         console.log(lncount)
                     });
-                }).catch(function() {
-                    exec('sleep 5; wvdial Defaults -C ' + configFilePath + ' 1>' + wvdialerr + ' 2>' + wvdialout).catch(function() {
+                }).catch(function () {
+                    exec('sleep 5; wvdial Defaults -C ' + configFilePath + ' 1>' + wvdialerr + ' 2>' + wvdialout).catch(function () {
                         lncount = lncount + 60
                         wvconnect()
                         console.log(lncount)
@@ -231,13 +239,13 @@ function connect(configFilePath: string, watch?: boolean, device?: string) {
 
         var tail = new Tail(wvdialout, '\n');
 
-        tail.on('line', function(data) {
+        tail.on('line', function (data) {
 
             lncount = lncount + 1;
 
 
             if (data.split("DNS").length === 2) {
-        
+
                 // setTimeout(function () {
                 //   exec('ip route add default dev ppp0')
                 // }, 30000);
@@ -267,7 +275,12 @@ function connect(configFilePath: string, watch?: boolean, device?: string) {
                     reject(true);
 
                 } else {
-                    hwrestart("unplug");
+                    console.log('mobile error 0233')
+                    setTimeout(() => {
+                        hwrestart("unplug")
+                    }, 2000)
+
+
                 }
 
 
@@ -279,7 +292,7 @@ function connect(configFilePath: string, watch?: boolean, device?: string) {
         });
 
 
-        tail.on('error', function(data) {
+        tail.on('error', function (data) {
             console.log("tailerror");
 
 
@@ -288,7 +301,12 @@ function connect(configFilePath: string, watch?: boolean, device?: string) {
                 reject(true);
 
             } else {
-                hwrestart("unplug");
+
+                console.log('mobile tail error')
+                setTimeout(() => {
+                    hwrestart("unplug")
+                }, 2000)
+
             }
 
 
@@ -326,9 +344,9 @@ function setprov(configFilePath, provider: IProviderCF) {
 
     this.provider = provider;
 
-    return new Promise<{ success?: boolean }>(function(resolve, reject) {
+    return new Promise<{ success?: boolean }>(function (resolve, reject) {
         if (provider.apn) {
-            setstring(configFilePath, 'Init3', 'AT+CGDCONT=1,"ip","' + provider.apn + '",,0,0').then(function() {
+            setstring(configFilePath, 'Init3', 'AT+CGDCONT=1,"ip","' + provider.apn + '",,0,0').then(function () {
                 console.log('ok apn');
                 if (provider.phone) {
                     setstring(configFilePath, 'Phone', provider.phone);
@@ -380,37 +398,53 @@ export default class WvDial {
     connect(watch?: boolean) {
         let configFilePath = this.configFilePath;
         let dev = this.device;
-        return new Promise<boolean>(function(resolve, reject) {
+        return new Promise<boolean>(function (resolve, reject) {
             console.log('connection');
 
-            getstring(configFilePath, 'Modem').then(function() {
-                connect(configFilePath, watch, dev).then(function(answer) {
+            getstring(configFilePath, 'Modem').then(function () {
+                connect(configFilePath, watch, dev).then(function (answer) {
                     if (!watch) {
 
                         resolve(answer);
 
                     } else {
-                        hwrestart("unplug");
+
+                        console.log('mobile error 0134')
+                        setTimeout(() => {
+                            hwrestart("unplug")
+                        }, 2000)
+
+
                     }
-                }).catch(function(err) {
+                }).catch(function (err) {
 
                     if (!watch) {
 
                         reject('rrrrrr');
 
                     } else {
-                        hwrestart("unplug");
+
+                        console.log('mobile error 0533')
+                        setTimeout(() => {
+                            hwrestart("unplug")
+                        }, 2000)
+
                     }
 
 
                 })
-            }).catch(function() {
+            }).catch(function () {
                 if (!watch) {
 
                     reject('errrr');
 
                 } else {
-                    hwrestart("unplug");
+
+                    console.log('mobile error 0633')
+                    setTimeout(() => {
+                        hwrestart("unplug")
+                    }, 2000)
+
                 }
 
             });
@@ -419,12 +453,12 @@ export default class WvDial {
 
     setUsb(device: string) {
         let configFilePath = this.configFilePath;
-        return new Promise<{ success?: boolean }>(function(resolve, reject) {
+        return new Promise<{ success?: boolean }>(function (resolve, reject) {
 
             if (device) {
-                setstring(configFilePath, 'Modem', device.replace(/\//g, '\\\/')).then(function() {
+                setstring(configFilePath, 'Modem', device.replace(/\//g, '\\\/')).then(function () {
                     resolve({ success: true });
-                }).catch(function(err) {
+                }).catch(function (err) {
                     reject(err);
 
                 });
@@ -467,8 +501,8 @@ export default class WvDial {
         }
         let setdev = this.device;
         let configFilePath = this.configFilePath;
-        return new Promise<boolean>(function(resolve, reject) {
-            lsusbdev().then(function(data) {
+        return new Promise<boolean>(function (resolve, reject) {
+            lsusbdev().then(function (data) {
                 let devto: any = false;
                 for (var i = 0; i < data.length; i++) {
                     var usb = data[i];
@@ -486,10 +520,10 @@ export default class WvDial {
 
 
                 if (devto) {
-                    setstring(configFilePath, 'Modem', devto).then(function() {
+                    setstring(configFilePath, 'Modem', devto).then(function () {
                         setdev = device;
                         resolve(true);
-                    }).catch(function(err) {
+                    }).catch(function (err) {
                         reject({ error: 'error on setstring ' });
                     })
 
@@ -511,13 +545,13 @@ export default class WvDial {
 
 
         let configFilePath = this.configFilePath;
-        return new Promise<{ success?: boolean }>(function(resolve, reject) {
+        return new Promise<{ success?: boolean }>(function (resolve, reject) {
             if (provider) {
 
                 if (!reset && device) {
 
-                    setprov(configFilePath, provider).then(function() {
-                        lsusbdev().then(function(data) {
+                    setprov(configFilePath, provider).then(function () {
+                        lsusbdev().then(function (data) {
                             let devto: any = false;
                             for (var i = 0; i < data.length; i++) {
                                 var usb = data[i];
@@ -535,10 +569,10 @@ export default class WvDial {
 
 
                             if (devto) {
-                                setstring(configFilePath, 'Modem', devto).then(function() {
+                                setstring(configFilePath, 'Modem', devto).then(function () {
 
                                     resolve({ success: true });
-                                }).catch(function(err) {
+                                }).catch(function (err) {
                                     reject({ error: 'error on setstring ' });
                                 })
 
@@ -550,22 +584,22 @@ export default class WvDial {
 
                         })
 
-                    }).catch(function(err) {
+                    }).catch(function (err) {
                         reject({ error: 'error on setprov ' });
                     })
 
                 } else if (reset) {
 
-                    exec('echo "[Dialer Defaults]" > ' + configFilePath).then(function() {
-                        exec('echo \'Init3 = AT+CGDCONT=1,"ip","' + provider.apn + '",,0,0\' >> ' + configFilePath).then(function() {
-                            exec('echo "Phone = ' + provider.phone + '" >> ' + configFilePath).then(function() {
-                                exec('echo "Username = ' + provider.username + '" >> ' + configFilePath).then(function() {
-                                    exec('echo "Password = ' + provider.password + '" >> ' + configFilePath).then(function() {
+                    exec('echo "[Dialer Defaults]" > ' + configFilePath).then(function () {
+                        exec('echo \'Init3 = AT+CGDCONT=1,"ip","' + provider.apn + '",,0,0\' >> ' + configFilePath).then(function () {
+                            exec('echo "Phone = ' + provider.phone + '" >> ' + configFilePath).then(function () {
+                                exec('echo "Username = ' + provider.username + '" >> ' + configFilePath).then(function () {
+                                    exec('echo "Password = ' + provider.password + '" >> ' + configFilePath).then(function () {
 
 
-                                        exec('wvdialconf ' + configFilePath).then(function() {
+                                        exec('wvdialconf ' + configFilePath).then(function () {
                                             resolve({ success: true });
-                                        }).catch(function(err) {
+                                        }).catch(function (err) {
                                             reject({ error: 'error on modem ' });
                                         })
 
@@ -577,7 +611,7 @@ export default class WvDial {
                             })
                         })
 
-                    }).catch(function(err) {
+                    }).catch(function (err) {
                         reject({ error: 'error on open ' + configFilePath });
 
                     });
