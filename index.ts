@@ -128,7 +128,7 @@ function connect(configFilePath: string, watch?: boolean, device?: string) {
 
                 if (!watch) {
                     tail.unwatch();
-                    reject(true);
+                    reject('timeout?');
 
                 } else {
                     console.log("no watch reboot")
@@ -272,7 +272,7 @@ function connect(configFilePath: string, watch?: boolean, device?: string) {
 
                 if (!watch) {
                     tail.unwatch();
-                    reject(true);
+                    reject('unwatch');
 
                 } else {
                     console.log('mobile error 0233')
@@ -298,7 +298,7 @@ function connect(configFilePath: string, watch?: boolean, device?: string) {
 
             if (!watch) {
                 tail.unwatch();
-                reject(true);
+                reject('tail error');
 
             } else {
 
@@ -404,7 +404,7 @@ export default class WvDial {
             getstring(configFilePath, 'Modem').then(function () {
                 connect(configFilePath, watch, dev).then(function (answer) {
                     if (!watch) {
-
+                        console.log('maybe is connected')
                         resolve(answer);
 
                     } else {
