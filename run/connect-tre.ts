@@ -1,5 +1,5 @@
 let verb=require('verbo');
-import Wv=require('../index');
+import Wv from '../index';
 
 let config={
     configFilePath:'/etc/wvdial.conf',

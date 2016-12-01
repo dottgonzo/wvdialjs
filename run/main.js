@@ -1,6 +1,6 @@
 var verb=require('verbo'),
 Wv=require('../index.js');
-var wvdialjs=new Wv('/etc/wvdial.conf');
+var wvdialjs=new Wv.default('/etc/wvdial.conf');
 verb(wvdialjs.getProviders(),"info","providers");
 wvdialjs.getConfig().then(function(data){
   verb(data,"info","config")
